@@ -13,7 +13,7 @@ public class PostgreConfiguration {
 
     public static Connection getDatabaseConnection() throws SQLException {
 
-        String databaseUrl = System.getenv().get("DATABASE_URL");
+        String databaseUrl = System.getenv().get("DATABASE_URI");
         String databaseUser = System.getenv().get("DATABASE_USER");
         String databasePassword = System.getenv().get("DATABASE_PASSWORD");
         Connection conn = null;
