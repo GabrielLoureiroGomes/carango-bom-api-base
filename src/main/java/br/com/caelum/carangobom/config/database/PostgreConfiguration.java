@@ -17,9 +17,8 @@ public class PostgreConfiguration {
         String databaseUser = System.getenv().get("DATABASE_USER");
         String databasePassword = System.getenv().get("DATABASE_PASSWORD");
         Connection conn = null;
-        Properties props;
 
-        props = new Properties();
+        Properties props = new Properties();
         props.setProperty("user", databaseUser);
         props.setProperty("password", databasePassword);
 
@@ -27,9 +26,6 @@ public class PostgreConfiguration {
             conn = DriverManager.getConnection(databaseUrl, props);
         } catch (SQLException e) {
             e.getCause();
-        } finally {
-            assert conn != null;
-            conn.close();
         }
         return conn;
     }

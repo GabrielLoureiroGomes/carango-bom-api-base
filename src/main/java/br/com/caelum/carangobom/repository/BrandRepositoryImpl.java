@@ -14,17 +14,15 @@ public class BrandRepositoryImpl implements BrandRepository {
 
     DateFormatter date = new DateFormatter();
 
-
     @Override
     public List<Brand> findAll() {
         List<Brand> brands = new ArrayList<>();
 
-        try {
-            PreparedStatement ps = PostgreConfiguration.getDatabaseConnection().prepareStatement("SELECT NAME, CREATED_AT, UPDATED_AT FROM BRANDS");
+        try (PreparedStatement ps = PostgreConfiguration.getDatabaseConnection().prepareStatement("SELECT NAME, CREATED_AT, UPDATED_AT FROM BRANDS")) {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                Brand brand = new Brand();
+                var brand = new Brand();
                 brand.setName(rs.getString("NAME"));
                 brand.setCreatedAt(date.toLocalDate(rs.getDate("CREATED_AT").toString()));
                 brand.setCreatedAt(date.toLocalDate(rs.getDate("UPDATED_AT").toString()));
