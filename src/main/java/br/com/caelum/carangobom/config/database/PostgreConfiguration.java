@@ -3,14 +3,30 @@ package br.com.caelum.carangobom.config.database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class PostgreConfiguration {
 
-    Connection conn = null;
-    String databaseUrl = System.getenv().get("DATABASE_URL");
+    private PostgreConfiguration() {
 
-    public Connection getDatabaseConnection() throws SQLException {
-        conn = DriverManager.getConnection(databaseUrl);
+    }
+
+    public static Connection getDatabaseConnection() throws SQLException {
+
+        String databaseUrl = System.getenv().get("DATABASE_URI");
+        String databaseUser = System.getenv().get("DATABASE_USER");
+        String databasePassword = System.getenv().get("DATABASE_PASSWORD");
+        Connection conn = null;
+
+        Properties props = new Properties();
+        props.setProperty("user", databaseUser);
+        props.setProperty("password", databasePassword);
+
+        try {
+            conn = DriverManager.getConnection(databaseUrl, props);
+        } catch (SQLException e) {
+            e.getCause();
+        }
         return conn;
     }
 }
