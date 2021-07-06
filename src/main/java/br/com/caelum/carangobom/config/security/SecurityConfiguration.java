@@ -1,6 +1,8 @@
 package br.com.caelum.carangobom.config.security;
 
+import br.com.caelum.carangobom.repository.UserRepository;
 import br.com.caelum.carangobom.service.AuthService;
+import br.com.caelum.carangobom.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 @Configuration
@@ -20,6 +23,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private TokenService tokenService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     @Bean
@@ -37,20 +46,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/users/auth").permitAll()
-                .antMatchers(HttpMethod.POST, "/users").permitAll()
-                .antMatchers(HttpMethod.GET, "/vehicle").permitAll()
+                .antMatchers(HttpMethod.POST, "/v1/users/auth").permitAll()
+                .antMatchers(HttpMethod.POST, "/v1/users").permitAll()
+                .antMatchers(HttpMethod.GET, "/v1/vehicle").permitAll()
                 .anyRequest().authenticated()
                 .and().csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and().addFilterBefore(new AuthTokenFilter(tokenService, userRepository), UsernamePasswordAuthenticationFilter.class);
     }
 
     // Static resources
     @Override
     public void configure(WebSecurity web) throws Exception {
-    }
-
-    public static void main(String[] args) {
-        System.out.println(new BCryptPasswordEncoder().encode("123456"));
     }
 }
