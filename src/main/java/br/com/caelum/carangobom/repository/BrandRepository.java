@@ -1,9 +1,11 @@
 package br.com.caelum.carangobom.repository;
 
 import br.com.caelum.carangobom.domain.Brand;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface BrandRepository {
 
     List<Brand> findAll();
@@ -14,6 +16,6 @@ public interface BrandRepository {
 
     Brand create(Brand brand);
 
-    Brand update(Brand brand);
+    Brand update(String name);
 
 }
