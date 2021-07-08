@@ -27,18 +27,18 @@ public class BrandController {
 
     @PostMapping("brand")
     @ResponseStatus(HttpStatus.CREATED)
-    public Brand create(@RequestBody Brand brand) {
-        return brandRepository.create(brand);
+    public Brand create(@RequestBody Brand brandName) {
+        return brandRepository.create(brandName.getName());
     }
 
-    @DeleteMapping("cookbook/{id}")
+    @DeleteMapping("brand/{id}")
     public void delete(@PathVariable Long id) {
         brandRepository.delete(id);
     }
 
-    @PutMapping("cookbook/{id}")
-    public Brand update(@RequestBody String recipe) {
-        return brandRepository.update(recipe);
+    @PatchMapping("brand/{id}")
+    public Brand update(@PathVariable Long id, @RequestBody Brand brandName) {
+        return brandRepository.update(id, brandName.getName());
     }
 
 }

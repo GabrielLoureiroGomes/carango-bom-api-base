@@ -14,8 +14,8 @@ public interface BrandRepository {
 
     void delete(Long id);
 
-    Brand create(Brand brand);
+    Brand create(String brandName);
 
-    Brand update(String name);
+    Brand update(Long id, String name);
 
 }

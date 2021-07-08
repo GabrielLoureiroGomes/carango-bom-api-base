@@ -19,7 +19,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-class CarangoBomApplicationTests {
+class BrandTests {
 
     @InjectMocks
     private BrandController brandController;
@@ -49,7 +49,7 @@ class CarangoBomApplicationTests {
     void testGetBrandById() {
         Long id = 1L;
         when(brandRepository.findById(any())).thenReturn(brandMocks.getBmw());
-        Brand brand = brandRepository.findById(id);
+        Brand brand = brandController.findById(id);
         verify(brandRepository).findById(any());
         assertEquals(5L, brand.getId());
     }
@@ -66,10 +66,10 @@ class CarangoBomApplicationTests {
     @Test
     @DisplayName("UPDATE BRAND")
     void testUpdateRecipe() {
-        when(brandRepository.update(any())).thenReturn(brandMocks.getFiat());
-        Brand cook = brandController.update(brandMocks.getFiat().getName());
-        verify(brandRepository).update(any());
-        assertEquals(3L, cook.getId());
+        when(brandRepository.update(any(), any())).thenReturn(brandMocks.getFiat());
+        Brand brand = brandController.update(brandMocks.getFiat().getId(), brandMocks.getFiat());
+        verify(brandRepository).update(any(), any());
+        assertEquals(3L, brand.getId());
     }
 
     @Test
