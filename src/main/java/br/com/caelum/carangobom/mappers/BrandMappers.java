@@ -2,12 +2,14 @@ package br.com.caelum.carangobom.mappers;
 
 import br.com.caelum.carangobom.domain.Brand;
 import br.com.caelum.carangobom.utils.Utils;
+import lombok.extern.log4j.Log4j2;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Log4j2
 public class BrandMappers {
 
     private static final String COLUMN_ID = "ID";
@@ -28,7 +30,7 @@ public class BrandMappers {
                 brand.setUpdatedAt(rs.getDate(COLUMN_UPDATED_AT) != null ? Utils.toLocalDate(rs.getDate(COLUMN_UPDATED_AT).toString()) : null);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.debug(e.getMessage());
         }
         return brand;
     }
@@ -45,7 +47,7 @@ public class BrandMappers {
                 brands.add(brand);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.debug(e.getMessage());
         }
         return brands;
     }

@@ -5,6 +5,8 @@ import br.com.caelum.carangobom.domain.Brand;
 import br.com.caelum.carangobom.exception.BrandDuplicatedNameException;
 import br.com.caelum.carangobom.exception.BrandNotFoundException;
 import br.com.caelum.carangobom.exception.BusinessException;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -14,6 +16,7 @@ import java.util.List;
 import static br.com.caelum.carangobom.mappers.BrandMappers.mapToBrand;
 import static br.com.caelum.carangobom.mappers.BrandMappers.mapToListBrands;
 
+@Log4j2
 @Repository
 public class BrandRepositoryImpl implements BrandRepository {
 
@@ -26,7 +29,7 @@ public class BrandRepositoryImpl implements BrandRepository {
             return mapToListBrands(rs);
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.debug(e.getMessage());
         }
         return List.of();
     }
@@ -44,7 +47,7 @@ public class BrandRepositoryImpl implements BrandRepository {
             }
             return mapToBrand(rs);
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.debug(e.getMessage());
             throw new BusinessException();
         }
     }
@@ -57,7 +60,7 @@ public class BrandRepositoryImpl implements BrandRepository {
             ps.setLong(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.debug(e.getMessage());
         }
     }
 
@@ -75,7 +78,7 @@ public class BrandRepositoryImpl implements BrandRepository {
                 id = checkIfInsertIsSuccessed(ps);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.debug(e.getMessage());
             throw new BrandDuplicatedNameException(brandName);
         }
         return findById(id);
@@ -90,7 +93,7 @@ public class BrandRepositoryImpl implements BrandRepository {
             ps.setString(1, brandName);
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.debug(e.getMessage());
             throw new BrandDuplicatedNameException(brandName);
         }
         return findById(id);
@@ -103,7 +106,7 @@ public class BrandRepositoryImpl implements BrandRepository {
                 count = rs.getLong(1);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.debug(e.getMessage());
         }
         return count;
     }
