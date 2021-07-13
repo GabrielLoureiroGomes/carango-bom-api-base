@@ -1,4 +1,4 @@
-package br.com.caelum.carangobom;
+package br.com.caelum.carangobom.brand;
 
 import br.com.caelum.carangobom.domain.Brand;
 import org.springframework.stereotype.Component;
@@ -8,9 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-public class BrandMocks {
+public final class BrandMocks {
 
-    public Brand getChevrolet() {
+    public static Brand getChevrolet() {
         Brand brand = new Brand();
         brand.setId(1L);
         brand.setName("Chevrolet");
@@ -19,7 +19,7 @@ public class BrandMocks {
         return brand;
     }
 
-    public Brand getAudi() {
+    public static Brand getAudi() {
         Brand brand = new Brand();
         brand.setId(2L);
         brand.setName("Audi");
@@ -28,7 +28,7 @@ public class BrandMocks {
         return brand;
     }
 
-    public Brand getFiat() {
+    public static Brand getFiat() {
         Brand brand = new Brand();
         brand.setId(3L);
         brand.setName("Fiat");
@@ -37,7 +37,7 @@ public class BrandMocks {
         return brand;
     }
 
-    public Brand getFord() {
+    public static Brand getFord() {
         Brand brand = new Brand();
         brand.setId(4L);
         brand.setName("Ford");
@@ -46,7 +46,7 @@ public class BrandMocks {
         return brand;
     }
 
-    public Brand getBmw() {
+    public static Brand getBmw() {
         Brand brand = new Brand();
         brand.setId(5L);
         brand.setName("BMW");
@@ -55,7 +55,7 @@ public class BrandMocks {
         return brand;
     }
 
-    public List<Brand> getListBrands() {
+    public static List<Brand> getListBrands() {
         return Arrays.asList(getChevrolet(), getAudi(), getFiat(), getFord(), getBmw());
     }
 }

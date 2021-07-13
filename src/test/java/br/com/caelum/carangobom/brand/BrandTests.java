@@ -1,5 +1,6 @@
-package br.com.caelum.carangobom;
+package br.com.caelum.carangobom.brand;
 
+import br.com.caelum.carangobom.brand.BrandMocks;
 import br.com.caelum.carangobom.controller.BrandController;
 import br.com.caelum.carangobom.domain.Brand;
 import br.com.caelum.carangobom.repository.BrandRepository;
@@ -9,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
@@ -27,9 +27,6 @@ class BrandTests {
     @Mock
     private BrandRepository brandRepository;
 
-    @Autowired
-    private BrandMocks brandMocks;
-
     @BeforeEach
     public void getMocks() {
         MockitoAnnotations.openMocks(this);
@@ -38,7 +35,7 @@ class BrandTests {
     @Test
     @DisplayName("FIND ALL BRANDS")
     void testGetAllBrands() {
-        when(brandRepository.findAll()).thenReturn(brandMocks.getListBrands());
+        when(brandRepository.findAll()).thenReturn(BrandMocks.getListBrands());
         List<Brand> brands = brandController.findAll();
         verify(brandRepository).findAll();
         assertEquals(5, brands.size());
@@ -48,7 +45,7 @@ class BrandTests {
     @DisplayName("FIND BRAND BY ID")
     void testGetBrandById() {
         Long id = 1L;
-        when(brandRepository.findById(any())).thenReturn(brandMocks.getBmw());
+        when(brandRepository.findById(any())).thenReturn(BrandMocks.getBmw());
         Brand brand = brandController.findById(id);
         verify(brandRepository).findById(any());
         assertEquals(5L, brand.getId());
@@ -57,8 +54,8 @@ class BrandTests {
     @Test
     @DisplayName("CREATE BRAND")
     void testCreateBrand() {
-        when(brandRepository.create(any())).thenReturn(brandMocks.getAudi());
-        Brand brand = brandController.create(brandMocks.getAudi());
+        when(brandRepository.create(any())).thenReturn(BrandMocks.getAudi());
+        Brand brand = brandController.create(BrandMocks.getAudi());
         verify(brandRepository).create(any());
         assertEquals(2, brand.getId());
     }
@@ -66,8 +63,8 @@ class BrandTests {
     @Test
     @DisplayName("UPDATE BRAND")
     void testUpdateRecipe() {
-        when(brandRepository.update(any(), any())).thenReturn(brandMocks.getFiat());
-        Brand brand = brandController.update(brandMocks.getFiat().getId(), brandMocks.getFiat());
+        when(brandRepository.update(any(), any())).thenReturn(BrandMocks.getFiat());
+        Brand brand = brandController.update(BrandMocks.getFiat().getId(), BrandMocks.getFiat());
         verify(brandRepository).update(any(), any());
         assertEquals(3L, brand.getId());
     }
