@@ -1,4 +1,4 @@
-package br.com.caelum.carangobom;
+package br.com.caelum.carangobom.mocks;
 
 import br.com.caelum.carangobom.domain.Brand;
 import org.springframework.stereotype.Component;

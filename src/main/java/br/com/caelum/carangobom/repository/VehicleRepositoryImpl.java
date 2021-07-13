@@ -3,6 +3,7 @@ package br.com.caelum.carangobom.repository;
 import br.com.caelum.carangobom.domain.Vehicle;
 
 import java.util.List;
+import java.util.Optional;
 
 public class VehicleRepositoryImpl implements VehicleRepository {
     @Override
@@ -11,8 +12,8 @@ public class VehicleRepositoryImpl implements VehicleRepository {
     }
 
     @Override
-    public Vehicle findById(Long id) {
-        return null;
+    public Optional<Vehicle> findById(Long id) {
+        return Optional.empty();
     }
 
     @Override

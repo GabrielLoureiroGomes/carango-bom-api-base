@@ -2,6 +2,7 @@ package br.com.caelum.carangobom;
 
 import br.com.caelum.carangobom.controller.BrandController;
 import br.com.caelum.carangobom.domain.Brand;
+import br.com.caelum.carangobom.mocks.BrandMocks;
 import br.com.caelum.carangobom.repository.BrandRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -10,9 +10,9 @@ import java.time.LocalDate;
 public class Vehicle {
 
     private Long id;
-    private Brand brand;
+    private Long brandId;
     private String model;
-    private LocalDate year;
+    private String year;
     private BigDecimal price;
     private LocalDate createdAt;
     private LocalDate updatedAt;
