@@ -1,6 +1,8 @@
 package br.com.caelum.carangobom.service;
 
+import br.com.caelum.carangobom.domain.Brand;
 import br.com.caelum.carangobom.domain.Vehicle;
+import br.com.caelum.carangobom.exception.BrandNotFoundException;
 import br.com.caelum.carangobom.exception.VehicleNotFoundException;
 import br.com.caelum.carangobom.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,8 @@ public class VehicleService {
         }
     }
 
-    public Vehicle create(Vehicle vehicle) {
+    public Vehicle create(Vehicle vehicle) throws BrandNotFoundException {
+        this.brandService.findById(vehicle.getBrandId());
         return this.vehicleRepository.create(vehicle);
     }
 
@@ -44,7 +47,7 @@ public class VehicleService {
         }
     }
 
-    public Vehicle update(Long id, Vehicle vehicle) throws VehicleNotFoundException {
+    public Vehicle update(Long id, Vehicle vehicle) throws VehicleNotFoundException, BrandNotFoundException {
         Optional<Vehicle> optionalVehicle = this.vehicleRepository.findById(id);
         if (optionalVehicle.isPresent()) {
             if (!vehicle.getBrandId().equals(optionalVehicle.get().getBrandId())) {

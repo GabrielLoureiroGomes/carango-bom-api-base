@@ -80,21 +80,23 @@ class VehicleServiceTest {
     @Test
     void testShouldCreateVehicle() {
         when(vehicleRepository.create(any())).thenReturn(vehicleMocks.getUno().get());
-        Vehicle vehicle = vehicleService.create(vehicleMocks.getUno().get());
+        Vehicle vehicle = assertDoesNotThrow(() ->vehicleService.create(vehicleMocks.getUno().get()));
 
         assertNotNull(vehicle);
         assertEquals(vehicleMocks.getUno().get().getId(), vehicle.getId());
         assertEquals(vehicleMocks.getUno().get().getModel(), vehicle.getModel());
     }
 
-//    @Test
-//    void testShouldCreateVehicleBrandNotFound() {
-//        when(vehicleRepository.create(any())).thenReturn(vehicleMocks.getUno().get());
-//        Vehicle vehicle = vehicleService.create(vehicleMocks.getUno().get());
-//        assertNotNull(vehicle);
-//        assertEquals(vehicleMocks.getUno().get().getId(), vehicle.getId());
-//        assertEquals(vehicleMocks.getUno().get().getModel(), vehicle.getModel());
-//    }
+    @Test
+    void testShouldCreateVehicleBrandNotFound() {
+        when(brandService.findById(Mockito.anyLong())).thenThrow(new BrandNotFoundException("Marca não encontrada!"));
+
+        BrandNotFoundException brandNotFoundException = assertThrows(
+                BrandNotFoundException.class,
+                ()-> vehicleService.create(vehicleMocks.getUno().get())
+        );
+        assertEquals(brandNotFoundException.getMessage(), "Marca não encontrada!");
+    }
 
     @Test
     void testShouldDeleteVehicle() {
@@ -151,7 +153,7 @@ class VehicleServiceTest {
         vehicleModified.setModel("BMW3");
         vehicleModified.setBrandId(brandId);
         when(vehicleRepository.findById(Mockito.anyLong())).thenReturn(vehicleMocks.getCorsa());
-        when(brandService.findById(brandId)).thenReturn(null);
+        when(brandService.findById(brandId)).thenThrow(new BrandNotFoundException("Marca não encontrada!"));
 
         BrandNotFoundException brandNotFoundException = assertThrows(
                 BrandNotFoundException.class,
