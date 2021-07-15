@@ -4,7 +4,6 @@ import br.com.caelum.carangobom.domain.Vehicle;
 import br.com.caelum.carangobom.exception.BrandNotFoundException;
 import br.com.caelum.carangobom.exception.VehicleNotFoundException;
 import br.com.caelum.carangobom.mocks.VehicleMocks;
-import br.com.caelum.carangobom.repository.BrandRepository;
 import br.com.caelum.carangobom.repository.VehicleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

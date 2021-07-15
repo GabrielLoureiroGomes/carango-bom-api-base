@@ -1,10 +1,12 @@
 package br.com.caelum.carangobom.repository;
 
 import br.com.caelum.carangobom.domain.Vehicle;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class VehicleRepositoryImpl implements VehicleRepository {
     @Override
     public List<Vehicle> findAll() {
