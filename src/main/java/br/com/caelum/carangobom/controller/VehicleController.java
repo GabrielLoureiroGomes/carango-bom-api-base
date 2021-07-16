@@ -25,7 +25,9 @@ public class VehicleController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Vehicle> getById(@PathVariable Long id) throws VehicleNotFoundException {
-        return new ResponseEntity<>(vehicleService.findById(id), HttpStatus.OK);
+        var vehicle = vehicleService.findById(id);
+        return new ResponseEntity<>(vehicle, HttpStatus.OK);
+
     }
 
     @PostMapping
@@ -43,7 +45,6 @@ public class VehicleController {
     public String delete(@PathVariable Long id) {
         return "OK";
     }
-
 //    @DeleteMapping("/{id}")
 //    public ResponseEntity<?> delete(@PathVariable long id) {
 //        return ResponseEntity.notFound().build();

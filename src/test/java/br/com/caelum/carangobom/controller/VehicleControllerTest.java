@@ -1,9 +1,11 @@
 package br.com.caelum.carangobom.controller;
 
 import br.com.caelum.carangobom.domain.Vehicle;
+import br.com.caelum.carangobom.exception.VehicleNotFoundException;
 import br.com.caelum.carangobom.mocks.VehicleMocks;
 import br.com.caelum.carangobom.service.VehicleService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,7 +32,7 @@ class VehicleControllerTest {
     @MockBean
     private VehicleService vehicleService;
 
-    private VehicleMocks vehicleMocks = new VehicleMocks();
+    private final VehicleMocks vehicleMocks = new VehicleMocks();
 
     @Test
     void testVehicleGetAll() throws Exception {
@@ -48,16 +50,20 @@ class VehicleControllerTest {
         Vehicle vehicle = vehicleMocks.getCorsa().get();
         when(vehicleService.findById(vehicle.getId())).thenReturn(vehicle);
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/carangobom/v1/vehicle/1").contentType(MediaType.APPLICATION_JSON))
+                MockMvcRequestBuilders.get("/carangobom/v1/vehicle/{id}", vehicle.getId()).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(vehicle.getId()))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
 
-//    @Test
-//    public void testVehicleGetByIdNotFound() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.get("/carangobom/v1/vehicle/1")).andExpect(status().isOk());
-//    }
+    @Test
+    void testVehicleGetByIdNotFound() throws Exception {
+        when(vehicleService.findById(Mockito.anyLong())).thenThrow(new VehicleNotFoundException("Veículo não encontrado!"));
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/carangobom/v1/vehicle/{id}", 5L).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
 
     @Test
     void testVehicleCreate() throws Exception {
@@ -81,7 +87,12 @@ class VehicleControllerTest {
 
     @Test
     void testVehicleDelete() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/carangobom/v1/vehicle/1")).andExpect(status().isOk());
+        Long id = 1L;
+        when(vehicleService.findById(id)).thenReturn(vehicleMocks.getCorsa().get());
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/carangobom/v1/vehicle/{id}", id).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 
 //    @Test
