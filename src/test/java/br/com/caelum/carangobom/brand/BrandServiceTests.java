@@ -51,8 +51,8 @@ class BrandServiceTests {
     }
 
     @Test
-    @DisplayName("FIND BRAND BY WITHOUT EXISTING ID")
-    void shouldThrowErrorWhenGetBrandByWithoutExistingId() {
+    @DisplayName("FIND BRAND BY NON EXISTING ID")
+    void shouldThrowErrorWhenGetBrandByNonExistingId() {
         Long id = 1L;
         given(brandRepository.findById(id)).willReturn(Optional.empty());
         assertThrows(BrandNotFoundException.class, () -> brandService.findBrandById(id));
@@ -70,8 +70,8 @@ class BrandServiceTests {
     }
 
     @Test
-    @DisplayName("FIND BRAND BY WITHOUT EXISTING NAME")
-    void shouldThrowErrorWhenGetBrandByWithoutExistingName() {
+    @DisplayName("FIND BRAND BY NON EXISTING NAME")
+    void shouldThrowErrorWhenGetBrandByNonExistingName() {
         String name = "Jaguar";
 
         given(brandRepository.findByName(any())).willReturn(Optional.empty());
@@ -125,8 +125,8 @@ class BrandServiceTests {
     }
 
     @Test
-    @DisplayName("UPDATE BRAND BY WITHOUT EXISTING ID")
-    void shouldThrowErrorWhenUpdateBrandWithoutExistingId() {
+    @DisplayName("UPDATE BRAND BY NON EXISTING ID")
+    void shouldThrowErrorWhenUpdateBrandNonExistingId() {
         Long id = 2L;
         Optional<Brand> audi = Optional.of(BrandMocks.getAudi());
 
@@ -167,8 +167,8 @@ class BrandServiceTests {
     }
 
     @Test
-    @DisplayName("DELETE BRAND BY WITHOUT EXISTING ID")
-    void shouldThrowErrorWhenDeleteBrandWithoutExistingId() {
+    @DisplayName("DELETE BRAND BY NON EXISTING ID")
+    void shouldThrowErrorWhenDeleteBrandNonExistingId() {
         Long id = 2L;
 
         given(brandRepository.findById(any())).willReturn(Optional.empty());
