@@ -46,13 +46,4 @@ public class VehicleController {
         vehicleService.delete(id);
         return ResponseEntity.ok().build();
     }
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<?> delete(@PathVariable long id) {
-//        return ResponseEntity.notFound().build();
-//    }
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<?> getById(@PathVariable  long id) {
-//        return ResponseEntity.notFound().build();
-//    }
 }

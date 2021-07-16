@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -64,6 +65,7 @@ class VehicleControllerTest {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/carangobom/v1/vehicle/{id}", 5L).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof  VehicleNotFoundException))
                 .andDo(print());
     }
 
@@ -104,6 +106,7 @@ class VehicleControllerTest {
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/carangobom/v1/vehicle/{id}", id))
                 .andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof  VehicleNotFoundException))
                 .andDo(print());
     }
 
