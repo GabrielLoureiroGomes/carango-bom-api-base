@@ -97,12 +97,13 @@ class BrandServiceTests {
     @Test
     @DisplayName("CREATE BRAND BY EXISTING BRAND NAME")
     void shouldThrowErrorWhenCreateBrandWithExistingName() {
-        Optional<Brand> audi = Optional.of(BrandMocks.getAudi());
+        Optional<Brand> optionalAudi = Optional.of(BrandMocks.getAudi());
+        Brand audi = optionalAudi.get();
 
         given(brandRepository.findByName(any())).willReturn(Optional.of(BrandMocks.getAudi()));
         given(brandRepository.create(any())).willReturn(Optional.of(BrandMocks.getAudi()));
 
-        assertThrows(BrandDuplicatedNameException.class, () -> brandService.createBrand(audi.get()));
+        assertThrows(BrandDuplicatedNameException.class, () -> brandService.createBrand(audi));
         verify(brandRepository, times(1)).findByName(any());
         verify(brandRepository, never()).create(any());
     }
@@ -128,11 +129,12 @@ class BrandServiceTests {
     @DisplayName("UPDATE BRAND BY NON EXISTING ID")
     void shouldThrowErrorWhenUpdateBrandNonExistingId() {
         Long id = 2L;
-        Optional<Brand> audi = Optional.of(BrandMocks.getAudi());
+        Optional<Brand> optionalBrand = Optional.of(BrandMocks.getAudi());
+        Brand audi = optionalBrand.get();
 
         given(brandRepository.findById(any())).willReturn(Optional.empty());
 
-        assertThrows(BrandNotFoundException.class, () -> brandService.updateBrand(id, audi.get()));
+        assertThrows(BrandNotFoundException.class, () -> brandService.updateBrand(id, audi));
         verify(brandRepository, times(1)).findById(any());
         verify(brandRepository, never()).findByName(any());
         verify(brandRepository, never()).update(any(), any());
@@ -142,12 +144,12 @@ class BrandServiceTests {
     @DisplayName("UPDATE BRAND BY EXISTING BRAND NAME")
     void shouldThrowErrorWhenUpdateBrandWithExistingName() {
         Long id = 2L;
-        String audi = BrandMocks.getAudi().getName();
+        Brand audi = BrandMocks.getAudi();
 
         given(brandRepository.findById(id)).willReturn(Optional.of(BrandMocks.getAudi()));
-        given(brandRepository.findByName(audi)).willReturn(Optional.of(BrandMocks.getAudi()));
+        given(brandRepository.findByName(audi.getName())).willReturn(Optional.of(BrandMocks.getAudi()));
 
-        assertThrows(BrandDuplicatedNameException.class, () -> brandService.updateBrand(id, BrandMocks.getAudi()));
+        assertThrows(BrandDuplicatedNameException.class, () -> brandService.updateBrand(id, audi));
         verify(brandRepository, times(1)).findById(any());
         verify(brandRepository, times(1)).findByName(any());
         verify(brandRepository, never()).update(any(), any());
