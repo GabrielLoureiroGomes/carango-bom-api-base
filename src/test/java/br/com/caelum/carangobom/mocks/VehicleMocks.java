@@ -19,7 +19,7 @@ public class VehicleMocks {
         vehicle.setId(1L);
         vehicle.setBrandId(brandMocks.getChevrolet().getId());
         vehicle.setModel("Corsa");
-        vehicle.setPrice(new BigDecimal("23000.00"));
+        vehicle.setPrice(23000);
         vehicle.setYear("2012");
         vehicle.setCreatedAt(LocalDate.now());
         vehicle.setUpdatedAt(null);
@@ -31,7 +31,7 @@ public class VehicleMocks {
         vehicle.setId(2L);
         vehicle.setBrandId(brandMocks.getAudi().getId());
         vehicle.setModel("A3");
-        vehicle.setPrice(new BigDecimal("150000.00"));
+        vehicle.setPrice(150000);
         vehicle.setYear("2020");
         vehicle.setCreatedAt(LocalDate.now());
         vehicle.setUpdatedAt(null);
@@ -43,7 +43,7 @@ public class VehicleMocks {
         vehicle.setId(3L);
         vehicle.setBrandId(brandMocks.getFiat().getId());
         vehicle.setModel("Uno");
-        vehicle.setPrice(new BigDecimal("30000.00"));
+        vehicle.setPrice(30000);
         vehicle.setYear("2018");
         vehicle.setCreatedAt(LocalDate.now());
         vehicle.setUpdatedAt(null);

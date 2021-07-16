@@ -1,9 +1,12 @@
 package br.com.caelum.carangobom.controller;
 
+import br.com.caelum.carangobom.controller.request.CreateVehicleRequest;
 import br.com.caelum.carangobom.domain.Vehicle;
+import br.com.caelum.carangobom.exception.BrandNotFoundException;
 import br.com.caelum.carangobom.exception.VehicleNotFoundException;
 import br.com.caelum.carangobom.mocks.VehicleMocks;
 import br.com.caelum.carangobom.service.VehicleService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
@@ -32,6 +35,9 @@ class VehicleControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @MockBean
     private VehicleService vehicleService;
 
@@ -41,8 +47,13 @@ class VehicleControllerTest {
     void testVehicleGetAll() throws Exception {
         List<Vehicle> listVehicles = vehicleMocks.getListVehicles();
         when(vehicleService.findAll()).thenReturn(listVehicles);
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/carangobom/v1/vehicle").contentType(MediaType.APPLICATION_JSON))
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .get("/carangobom/v1/vehicle")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                )
                 .andExpect(jsonPath("$", hasSize(listVehicles.size())))
                 .andExpect(status().isOk())
                 .andDo(print());
@@ -52,8 +63,13 @@ class VehicleControllerTest {
     void testVehicleGetById() throws Exception {
         Vehicle vehicle = vehicleMocks.getCorsa().get();
         when(vehicleService.findById(vehicle.getId())).thenReturn(vehicle);
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/carangobom/v1/vehicle/{id}", vehicle.getId()).contentType(MediaType.APPLICATION_JSON))
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .get("/carangobom/v1/vehicle/{id}", vehicle.getId())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                )
                 .andExpect(jsonPath("$.id").value(vehicle.getId()))
                 .andExpect(status().isOk())
                 .andDo(print());
@@ -62,39 +78,135 @@ class VehicleControllerTest {
     @Test
     void testVehicleGetByIdNotFound() throws Exception {
         when(vehicleService.findById(Mockito.anyLong())).thenThrow(new VehicleNotFoundException("Veículo não encontrado!"));
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/carangobom/v1/vehicle/{id}", 5L).contentType(MediaType.APPLICATION_JSON))
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .get("/carangobom/v1/vehicle/{id}", 5L)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                )
                 .andExpect(status().isNotFound())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof  VehicleNotFoundException))
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof VehicleNotFoundException))
                 .andDo(print());
     }
 
     @Test
     void testVehicleCreate() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/carangobom/v1/vehicle")).andExpect(status().isCreated());
+        Vehicle vehicle = vehicleMocks.getCorsa().get();
+        CreateVehicleRequest createVehicleRequest = new CreateVehicleRequest(vehicle.getModel(), vehicle.getPrice(), vehicle.getYear(), vehicle.getBrandId());
+
+        when(vehicleService.create(Mockito.any())).thenReturn(vehicle);
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .post("/carangobom/v1/vehicle")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(createVehicleRequest))
+                )
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.model").value(vehicle.getModel()))
+                .andDo(print());
     }
 
-//    @Test
-//    public void testVehicleCreateBrandNotFound() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.post("/carangobom/v1/vehicle")).andExpect(status().isCreated());
-//    }
+    @Test
+    void testVehicleCreateBrandNotFound() throws Exception {
+        Vehicle vehicle = vehicleMocks.getCorsa().get();
+        CreateVehicleRequest createVehicleRequest = new CreateVehicleRequest(vehicle.getModel(), vehicle.getPrice(), vehicle.getYear(), vehicle.getBrandId());
+
+        when(vehicleService.create(Mockito.any())).thenThrow(new BrandNotFoundException("Marca não encontrada!"));
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .post("/carangobom/v1/vehicle")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(createVehicleRequest))
+                )
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof BrandNotFoundException))
+                .andDo(print());
+    }
+
 
     @Test
     void testVehicleUpdate() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/carangobom/v1/vehicle/1")).andExpect(status().isOk());
+        Vehicle vehicle = vehicleMocks.getCorsa().get();
+        Integer newPrice = vehicle.getPrice() + 10000;
+        vehicle.setPrice(newPrice);
+        CreateVehicleRequest createVehicleRequest = new CreateVehicleRequest(vehicle.getModel(), vehicle.getPrice(), vehicle.getYear(), vehicle.getBrandId());
+
+        when(vehicleService.update(Mockito.anyLong(), Mockito.any())).thenReturn(vehicle);
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .put("/carangobom/v1/vehicle/{id}", vehicle.getId())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(createVehicleRequest))
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.model").value(vehicle.getModel()))
+                .andExpect(jsonPath("$.price").value(vehicle.getPrice()))
+                .andDo(print());
     }
 
-//    @Test
-//    public void testVehicleUpdateNotFound() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.delete("/carangobom/v1/vehicle/1")).andExpect(status().isOk());
-//    }
+    @Test
+    void testVehicleUpdateNotFound() throws Exception {
+        Vehicle vehicle = vehicleMocks.getCorsa().get();
+        Integer newPrice = vehicle.getPrice() + 10000;
+        vehicle.setPrice(newPrice);
+        CreateVehicleRequest createVehicleRequest = new CreateVehicleRequest(vehicle.getModel(), vehicle.getPrice(), vehicle.getYear(), vehicle.getBrandId());
+
+        when(vehicleService.update(Mockito.anyLong(), Mockito.any())).thenThrow(new VehicleNotFoundException("Veículo não encontrado!"));
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .put("/carangobom/v1/vehicle/{id}", vehicle.getId())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(createVehicleRequest))
+                )
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof VehicleNotFoundException))
+                .andDo(print());
+    }
+
+    @Test
+    void testVehicleUpdateBrandNotFound() throws Exception {
+        Vehicle vehicle = vehicleMocks.getCorsa().get();
+        Integer newPrice = vehicle.getPrice() + 10000;
+        vehicle.setPrice(newPrice);
+        CreateVehicleRequest createVehicleRequest = new CreateVehicleRequest(vehicle.getModel(), vehicle.getPrice(), vehicle.getYear(), vehicle.getBrandId());
+
+        when(vehicleService.update(Mockito.anyLong(), Mockito.any())).thenThrow(new BrandNotFoundException("Marca não encontrada!"));
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .put("/carangobom/v1/vehicle/{id}", vehicle.getId())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(createVehicleRequest))
+                )
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof BrandNotFoundException))
+                .andDo(print());
+    }
+
 
     @Test
     void testVehicleDelete() throws Exception {
         Long id = 1L;
         when(vehicleService.findById(id)).thenReturn(vehicleMocks.getCorsa().get());
-        mockMvc.perform(
-                MockMvcRequestBuilders.delete("/carangobom/v1/vehicle/{id}", id).contentType(MediaType.APPLICATION_JSON))
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .delete("/carangobom/v1/vehicle/{id}", id)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                )
                 .andExpect(status().isOk())
                 .andDo(print());
     }
@@ -103,10 +215,15 @@ class VehicleControllerTest {
     void testVehicleDeleteNotFound() throws Exception {
         Long id = 5L;
         doThrow(new VehicleNotFoundException("Veículo não encontrado!")).when(vehicleService).delete(ArgumentMatchers.isA(Long.class));
-        mockMvc.perform(
-                MockMvcRequestBuilders.delete("/carangobom/v1/vehicle/{id}", id))
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .delete("/carangobom/v1/vehicle/{id}", id)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                )
                 .andExpect(status().isNotFound())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof  VehicleNotFoundException))
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof VehicleNotFoundException))
                 .andDo(print());
     }
 

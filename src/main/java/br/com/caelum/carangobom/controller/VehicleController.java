@@ -1,5 +1,6 @@
 package br.com.caelum.carangobom.controller;
 
+import br.com.caelum.carangobom.controller.request.CreateVehicleRequest;
 import br.com.caelum.carangobom.domain.Vehicle;
 import br.com.caelum.carangobom.exception.VehicleNotFoundException;
 import br.com.caelum.carangobom.service.VehicleService;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -32,13 +34,15 @@ public class VehicleController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public String create() {
-        return "OK";
+    public ResponseEntity<Vehicle> create(@Valid @RequestBody CreateVehicleRequest body) {
+        Vehicle vehicle = vehicleService.create(body.toVehicle());
+        return new ResponseEntity<>(vehicle, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public String update(@PathVariable Long id) {
-        return "OK";
+    public ResponseEntity<Vehicle> update(@PathVariable Long id, @Valid @RequestBody CreateVehicleRequest body) throws VehicleNotFoundException {
+        Vehicle vehicle = vehicleService.update(id, body.toVehicle());
+        return new ResponseEntity<>(vehicle, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
