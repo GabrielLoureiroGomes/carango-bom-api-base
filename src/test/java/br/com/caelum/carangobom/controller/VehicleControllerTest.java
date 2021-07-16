@@ -5,6 +5,7 @@ import br.com.caelum.carangobom.exception.VehicleNotFoundException;
 import br.com.caelum.carangobom.mocks.VehicleMocks;
 import br.com.caelum.carangobom.service.VehicleService;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -95,9 +97,14 @@ class VehicleControllerTest {
                 .andDo(print());
     }
 
-//    @Test
-//    public void testVehicleDeleteNotFound() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.delete("/carangobom/v1/vehicle/1")).andExpect(status().isOk());
-//    }
+    @Test
+    void testVehicleDeleteNotFound() throws Exception {
+        Long id = 5L;
+        doThrow(new VehicleNotFoundException("Veículo não encontrado!")).when(vehicleService).delete(ArgumentMatchers.isA(Long.class));
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/carangobom/v1/vehicle/{id}", id))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
 
 }

@@ -42,8 +42,9 @@ public class VehicleController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id) {
-        return "OK";
+    public ResponseEntity<Object> delete(@PathVariable Long id) throws VehicleNotFoundException {
+        vehicleService.delete(id);
+        return ResponseEntity.ok().build();
     }
 //    @DeleteMapping("/{id}")
 //    public ResponseEntity<?> delete(@PathVariable long id) {
