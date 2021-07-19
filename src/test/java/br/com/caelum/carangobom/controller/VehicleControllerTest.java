@@ -77,7 +77,7 @@ class VehicleControllerTest {
 
     @Test
     void testVehicleGetByIdNotFound() throws Exception {
-        when(vehicleService.findById(Mockito.anyLong())).thenThrow(new VehicleNotFoundException("Veículo não encontrado!"));
+        when(vehicleService.findById(Mockito.anyLong())).thenThrow(VehicleNotFoundException.class);
         mockMvc
                 .perform(
                         MockMvcRequestBuilders
@@ -115,7 +115,7 @@ class VehicleControllerTest {
         Vehicle vehicle = vehicleMocks.getCorsa().get();
         CreateVehicleRequest createVehicleRequest = new CreateVehicleRequest(vehicle.getModel(), vehicle.getPrice(), vehicle.getYear(), vehicle.getBrandId());
 
-        when(vehicleService.create(Mockito.any())).thenThrow(new BrandNotFoundException("Marca não encontrada!"));
+        when(vehicleService.create(Mockito.any())).thenThrow(BrandNotFoundException.class);
         mockMvc
                 .perform(
                         MockMvcRequestBuilders
@@ -160,7 +160,7 @@ class VehicleControllerTest {
         vehicle.setPrice(newPrice);
         CreateVehicleRequest createVehicleRequest = new CreateVehicleRequest(vehicle.getModel(), vehicle.getPrice(), vehicle.getYear(), vehicle.getBrandId());
 
-        when(vehicleService.update(Mockito.anyLong(), Mockito.any())).thenThrow(new VehicleNotFoundException("Veículo não encontrado!"));
+        when(vehicleService.update(Mockito.anyLong(), Mockito.any())).thenThrow(VehicleNotFoundException.class);
         mockMvc
                 .perform(
                         MockMvcRequestBuilders
@@ -181,7 +181,7 @@ class VehicleControllerTest {
         vehicle.setPrice(newPrice);
         CreateVehicleRequest createVehicleRequest = new CreateVehicleRequest(vehicle.getModel(), vehicle.getPrice(), vehicle.getYear(), vehicle.getBrandId());
 
-        when(vehicleService.update(Mockito.anyLong(), Mockito.any())).thenThrow(new BrandNotFoundException("Marca não encontrada!"));
+        when(vehicleService.update(Mockito.anyLong(), Mockito.any())).thenThrow(BrandNotFoundException.class);
         mockMvc
                 .perform(
                         MockMvcRequestBuilders
@@ -214,7 +214,7 @@ class VehicleControllerTest {
     @Test
     void testVehicleDeleteNotFound() throws Exception {
         Long id = 5L;
-        doThrow(new VehicleNotFoundException("Veículo não encontrado!")).when(vehicleService).delete(ArgumentMatchers.isA(Long.class));
+        doThrow(VehicleNotFoundException.class).when(vehicleService).delete(ArgumentMatchers.isA(Long.class));
         mockMvc
                 .perform(
                         MockMvcRequestBuilders
