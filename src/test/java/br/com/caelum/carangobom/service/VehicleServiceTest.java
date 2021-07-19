@@ -18,7 +18,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 
 class VehicleServiceTest {
 
@@ -68,11 +69,7 @@ class VehicleServiceTest {
         Long id = 4L;
         when(vehicleRepository.findById(id)).thenReturn(Optional.empty());
 
-        VehicleNotFoundException vehicleNotFoundException = assertThrows(
-                VehicleNotFoundException.class,
-                () -> vehicleService.findById(id)
-        );
-        assertEquals(vehicleNotFoundException.getMessage(), "Veículo não encontrado!");
+        assertThrows(VehicleNotFoundException.class, () -> vehicleService.findById(id));
     }
 
     @Test
@@ -87,13 +84,9 @@ class VehicleServiceTest {
 
     @Test
     void testShouldCreateVehicleBrandNotFound() {
-        when(brandService.findBrandById(Mockito.anyLong())).thenThrow(new BrandNotFoundException("Marca não encontrada!"));
+        when(brandService.findBrandById(Mockito.anyLong())).thenThrow(BrandNotFoundException.class);
 
-        BrandNotFoundException brandNotFoundException = assertThrows(
-                BrandNotFoundException.class,
-                ()-> vehicleService.create(vehicleMocks.getUno().get())
-        );
-        assertEquals(brandNotFoundException.getMessage(), "Marca não encontrada!");
+        assertThrows(Exception.class, () -> vehicleService.create(vehicleMocks.getUno().get()));
     }
 
     @Test
@@ -102,7 +95,7 @@ class VehicleServiceTest {
         when(vehicleRepository.findById(id)).thenReturn(vehicleMocks.getCorsa());
         when(vehicleRepository.findAll()).thenReturn(vehicleMocks.getListVehicles().subList(1, vehicleMocks.getListVehicles().size()));
 
-        assertDoesNotThrow(()-> vehicleService.delete(id));
+        assertDoesNotThrow(() -> vehicleService.delete(id));
         List<Vehicle> vehicles = vehicleService.findAll();
         assertEquals(vehicleMocks.getListVehicles().size() - 1, vehicles.size());
         assertEquals(0, vehicles.stream().filter(v -> v.getId().equals(id)).collect(Collectors.toList()).size());
@@ -113,11 +106,7 @@ class VehicleServiceTest {
         Long id = 4L;
         when(vehicleRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
-        VehicleNotFoundException vehicleNotFoundException = assertThrows(
-                VehicleNotFoundException.class,
-                ()-> vehicleService.delete(id)
-        );
-        assertEquals(vehicleNotFoundException.getMessage(), "Veículo não encontrado!");
+        assertThrows(VehicleNotFoundException.class, () -> vehicleService.delete(id));
     }
 
     @Test
@@ -137,11 +126,7 @@ class VehicleServiceTest {
         Vehicle vehicle = vehicleMocks.getCorsa().get();
         when(vehicleRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
-        VehicleNotFoundException vehicleNotFoundException = assertThrows(
-                VehicleNotFoundException.class,
-                ()-> vehicleService.update(vehicle.getId(), vehicle)
-        );
-        assertEquals(vehicleNotFoundException.getMessage(), "Veículo não encontrado!");
+        assertThrows(VehicleNotFoundException.class, () -> vehicleService.update(vehicle.getId(), vehicle));
     }
 
     @Test
@@ -151,13 +136,9 @@ class VehicleServiceTest {
         vehicleModified.setModel("BMW3");
         vehicleModified.setBrandId(brandId);
         when(vehicleRepository.findById(Mockito.anyLong())).thenReturn(vehicleMocks.getCorsa());
-        when(brandService.findBrandById(brandId)).thenThrow(new BrandNotFoundException("Marca não encontrada!"));
+        when(brandService.findBrandById(brandId)).thenThrow(BrandNotFoundException.class);
 
-        BrandNotFoundException brandNotFoundException = assertThrows(
-                BrandNotFoundException.class,
-                ()-> vehicleService.update(vehicleModified.getId(), vehicleModified)
-        );
-        assertEquals(brandNotFoundException.getMessage(), "Marca não encontrada!");
+        assertThrows(Exception.class, () -> vehicleService.update(vehicleModified.getId(), vehicleModified));
     }
 
 }

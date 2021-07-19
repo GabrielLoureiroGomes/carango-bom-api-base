@@ -28,7 +28,7 @@ public class VehicleService {
         if (vehicle.isPresent()) {
             return vehicle.get();
         } else {
-            throw new VehicleNotFoundException("Veículo não encontrado!");
+            throw new VehicleNotFoundException(id.toString());
         }
     }
 
@@ -42,7 +42,7 @@ public class VehicleService {
         if (vehicle.isPresent()) {
             this.vehicleRepository.delete(vehicle.get().getId());
         } else {
-            throw new VehicleNotFoundException("Veículo não encontrado!");
+            throw new VehicleNotFoundException(id.toString());
         }
     }
 
@@ -54,7 +54,7 @@ public class VehicleService {
             }
             return this.vehicleRepository.update(vehicle);
         } else {
-            throw new VehicleNotFoundException("Veículo não encontrado!");
+            throw new VehicleNotFoundException(id.toString());
         }
     }
 }
