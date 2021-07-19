@@ -52,7 +52,7 @@ public class VehicleService {
             if (!vehicle.getBrandId().equals(optionalVehicle.get().getBrandId())) {
                 this.brandService.findBrandById(vehicle.getBrandId());
             }
-            return this.vehicleRepository.update(vehicle);
+            return this.vehicleRepository.update(id, vehicle);
         } else {
             throw new VehicleNotFoundException(id.toString());
         }

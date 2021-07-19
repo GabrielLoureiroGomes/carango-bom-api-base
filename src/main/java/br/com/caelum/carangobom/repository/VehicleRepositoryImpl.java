@@ -52,43 +52,42 @@ public class VehicleRepositoryImpl implements VehicleRepository {
         String insertQuery = "INSERT INTO VEHICLES(BRAND_ID, MODEL, YEAR, PRICE, CREATED_AT) VALUES(?, ?, ?, ?, ?) RETURNING ID";
         long id = 0;
         try (PreparedStatement ps = PostgreConfiguration.getDatabaseConnection().prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
-            LocalDate now = LocalDate.now();
             ps.setLong(1, vehicle.getBrandId());
             ps.setString(2, vehicle.getModel());
             ps.setString(3, vehicle.getYear());
             ps.setInt(4, vehicle.getPrice());
-            ps.setDate(5, Date.valueOf(now));
-            vehicle.setCreatedAt(now);
+            ps.setDate(5, Date.valueOf(LocalDate.now()));
 
             int affectedRows = ps.executeUpdate();
             if (affectedRows > 0) {
                 id = checkIfInsertIsSucceed(ps);
             }
-            vehicle.setId(id);
         } catch (SQLException e) {
             log.debug(e.getMessage());
         }
 
-        return vehicle;
+        Optional<Vehicle> newVehicle = findById(id);
+        return newVehicle.orElse(null);
     }
 
     @Override
-    public Vehicle update(Vehicle vehicle) {
+    public Vehicle update(Long id, Vehicle vehicle) {
         String updateQuery = "UPDATE VEHICLES SET BRAND_ID = ?, MODEL = ?, YEAR = ?, PRICE = ?, UPDATED_AT = ? WHERE ID = ?";
         try (PreparedStatement ps = PostgreConfiguration.getDatabaseConnection().prepareStatement(updateQuery)) {
-            LocalDate now = LocalDate.now();
             ps.setLong(1, vehicle.getBrandId());
             ps.setString(2, vehicle.getModel());
-            ps.setInt(3, vehicle.getPrice());
-            ps.setDate(4, Date.valueOf(now));
-            ps.setLong(5, vehicle.getId());
+            ps.setString(3, vehicle.getYear());
+            ps.setInt(4, vehicle.getPrice());
+            ps.setDate(5, Date.valueOf(LocalDate.now()));
+            ps.setLong(6, id);
             ps.executeUpdate();
 
-            vehicle.setUpdatedAt(now);
         } catch (SQLException e) {
             log.debug(e.getMessage());
         }
-        return vehicle;
+
+        Optional<Vehicle> newVehicle = findById(id);
+        return newVehicle.orElse(null);
     }
 
     @Override

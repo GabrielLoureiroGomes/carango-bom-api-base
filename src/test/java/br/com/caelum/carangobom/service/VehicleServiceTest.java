@@ -114,7 +114,7 @@ class VehicleServiceTest {
         Vehicle vehicleModified = vehicleMocks.getCorsa().get();
         vehicleModified.setModel("Celta");
         when(vehicleRepository.findById(Mockito.anyLong())).thenReturn(vehicleMocks.getCorsa());
-        when(vehicleRepository.update(Mockito.any())).thenReturn(vehicleModified);
+        when(vehicleRepository.update(Mockito.anyLong(), Mockito.any())).thenReturn(vehicleModified);
 
         Vehicle vehicleUpdated = assertDoesNotThrow(() -> vehicleService.update(vehicleModified.getId(), vehicleModified));
         assertEquals(vehicleModified.getId(), vehicleUpdated.getId());
