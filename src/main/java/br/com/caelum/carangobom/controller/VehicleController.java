@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/carangobom/v1/vehicle")
-@ResponseBody
 public class VehicleController {
 
     @Autowired
