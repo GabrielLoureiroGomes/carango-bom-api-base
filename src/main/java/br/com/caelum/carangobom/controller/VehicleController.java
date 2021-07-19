@@ -48,6 +48,6 @@ public class VehicleController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable Long id) throws VehicleNotFoundException {
         vehicleService.delete(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }
