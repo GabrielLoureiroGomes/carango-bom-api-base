@@ -1,10 +1,6 @@
 package br.com.caelum.carangobom.mocks;
 
 import br.com.caelum.carangobom.domain.Vehicle;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -12,12 +8,10 @@ import java.util.Optional;
 
 public class VehicleMocks {
 
-    private final BrandMocks brandMocks = new BrandMocks();
-
     public Optional<Vehicle> getCorsa() {
         Vehicle vehicle = new Vehicle();
         vehicle.setId(1L);
-        vehicle.setBrandId(brandMocks.getChevrolet().getId());
+        vehicle.setBrandId(BrandMocks.getChevrolet().getId());
         vehicle.setModel("Corsa");
         vehicle.setPrice(23000);
         vehicle.setYear("2012");
@@ -29,7 +23,7 @@ public class VehicleMocks {
     public Optional<Vehicle> getA3() {
         Vehicle vehicle = new Vehicle();
         vehicle.setId(2L);
-        vehicle.setBrandId(brandMocks.getAudi().getId());
+        vehicle.setBrandId(BrandMocks.getAudi().getId());
         vehicle.setModel("A3");
         vehicle.setPrice(150000);
         vehicle.setYear("2020");
@@ -41,7 +35,7 @@ public class VehicleMocks {
     public Optional<Vehicle> getUno() {
         Vehicle vehicle = new Vehicle();
         vehicle.setId(3L);
-        vehicle.setBrandId(brandMocks.getFiat().getId());
+        vehicle.setBrandId(BrandMocks.getFiat().getId());
         vehicle.setModel("Uno");
         vehicle.setPrice(30000);
         vehicle.setYear("2018");

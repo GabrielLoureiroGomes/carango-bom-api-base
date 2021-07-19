@@ -4,18 +4,21 @@ import br.com.caelum.carangobom.domain.Brand;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BrandRepository {
 
     List<Brand> findAll();
 
-    Brand findById(Long id);
+    Optional<Brand> findById(Long id);
+
+    Optional<Brand> findByName(String name);
 
     void delete(Long id);
 
-    Brand create(String brandName);
+    Optional<Brand> create(String brandName);
 
-    Brand update(Long id, String name);
+    Optional<Brand> update(Long id, String name);
 
 }

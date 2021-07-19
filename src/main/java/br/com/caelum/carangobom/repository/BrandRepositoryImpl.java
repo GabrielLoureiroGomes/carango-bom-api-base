@@ -2,16 +2,14 @@ package br.com.caelum.carangobom.repository;
 
 import br.com.caelum.carangobom.config.database.PostgreConfiguration;
 import br.com.caelum.carangobom.domain.Brand;
-import br.com.caelum.carangobom.exception.BrandDuplicatedNameException;
-import br.com.caelum.carangobom.exception.BrandNotFoundException;
 import br.com.caelum.carangobom.exception.BusinessException;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static br.com.caelum.carangobom.mappers.BrandMappers.mapToBrand;
 import static br.com.caelum.carangobom.mappers.BrandMappers.mapToListBrands;
@@ -35,16 +33,28 @@ public class BrandRepositoryImpl implements BrandRepository {
     }
 
     @Override
-    public Brand findById(Long id) {
+    public Optional<Brand> findById(Long id) {
         String findByIdQuery = "SELECT ID, NAME, CREATED_AT, UPDATED_AT FROM BRANDS WHERE ID = ?";
 
         try (PreparedStatement ps = PostgreConfiguration.getDatabaseConnection().prepareStatement(findByIdQuery)) {
             ps.setLong(1, id);
             ResultSet rs = ps.executeQuery();
 
-            if (!rs.isBeforeFirst()) {
-                throw new BrandNotFoundException(id.toString());
-            }
+            return mapToBrand(rs);
+        } catch (SQLException e) {
+            log.debug(e.getMessage());
+            throw new BusinessException();
+        }
+    }
+
+    @Override
+    public Optional<Brand> findByName(String name) {
+        String findByNameQuery = "SELECT ID, NAME, CREATED_AT, UPDATED_AT FROM BRANDS WHERE NAME = ?";
+
+        try (PreparedStatement ps = PostgreConfiguration.getDatabaseConnection().prepareStatement(findByNameQuery)) {
+            ps.setString(1, name);
+            ResultSet rs = ps.executeQuery();
+
             return mapToBrand(rs);
         } catch (SQLException e) {
             log.debug(e.getMessage());
@@ -65,11 +75,10 @@ public class BrandRepositoryImpl implements BrandRepository {
     }
 
     @Override
-    public Brand create(String brandName) {
-        String insertQuery = "INSERT INTO BRANDS(NAME, CREATED_AT) VALUES(?, ?)";
+    public Optional<Brand> create(String brandName) {
+        String insertQuery = "INSERT INTO BRANDS(NAME, CREATED_AT) VALUES(?, ?) RETURNING ID";
         long id = 0;
-        String[] generatedColumns = {"id"};
-        try (PreparedStatement ps = PostgreConfiguration.getDatabaseConnection().prepareStatement(insertQuery, generatedColumns)) {
+        try (PreparedStatement ps = PostgreConfiguration.getDatabaseConnection().prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, brandName);
             ps.setDate(2, Date.valueOf(LocalDate.now()));
 
@@ -79,22 +88,20 @@ public class BrandRepositoryImpl implements BrandRepository {
             }
         } catch (SQLException e) {
             log.debug(e.getMessage());
-            throw new BrandDuplicatedNameException(brandName);
         }
         return findById(id);
     }
 
     @Override
-    public Brand update(Long id, String brandName) {
-        String updateQuery = "UPDATE BRANDS SET NAME = ? WHERE ID = ?";
-        findById(id);
+    public Optional<Brand> update(Long id, String brandName) {
+        String updateQuery = "UPDATE BRANDS SET NAME = ?, UPDATED_AT = ? WHERE ID = ?";
         try (PreparedStatement ps = PostgreConfiguration.getDatabaseConnection().prepareStatement(updateQuery)) {
-            ps.setLong(2, id);
             ps.setString(1, brandName);
+            ps.setDate(2, Date.valueOf(LocalDate.now()));
+            ps.setLong(3, id);
             ps.executeUpdate();
         } catch (SQLException e) {
             log.debug(e.getMessage());
-            throw new BrandDuplicatedNameException(brandName);
         }
         return findById(id);
     }

@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Log4j2
 public class BrandMappers {
@@ -20,19 +21,22 @@ public class BrandMappers {
     private BrandMappers() {
     }
 
-    public static Brand mapToBrand(ResultSet rs) {
-        Brand brand = new Brand();
+    public static Optional<Brand> mapToBrand(ResultSet rs) {
+
         try {
-            while (rs.next()) {
-                brand.setId(rs.getLong(COLUMN_ID));
-                brand.setName(rs.getString(COLUMN_NAME));
-                brand.setCreatedAt(Utils.toLocalDate(rs.getDate(COLUMN_CREATED_AT).toString()));
-                brand.setUpdatedAt(rs.getDate(COLUMN_UPDATED_AT) != null ? Utils.toLocalDate(rs.getDate(COLUMN_UPDATED_AT).toString()) : null);
-            }
+            Brand brand = new Brand();
+            rs.next();
+            brand.setId(rs.getLong(COLUMN_ID));
+            brand.setName(rs.getString(COLUMN_NAME));
+            brand.setCreatedAt(Utils.toLocalDate(rs.getDate(COLUMN_CREATED_AT).toString()));
+            brand.setUpdatedAt(rs.getDate(COLUMN_UPDATED_AT) != null ? Utils.toLocalDate(rs.getDate(COLUMN_UPDATED_AT).toString()) : null);
+
+            return Optional.of(brand);
+
         } catch (SQLException e) {
             log.debug(e.getMessage());
         }
-        return brand;
+        return Optional.empty();
     }
 
     public static List<Brand> mapToListBrands(ResultSet rs) {

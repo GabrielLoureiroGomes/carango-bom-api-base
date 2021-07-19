@@ -61,7 +61,6 @@ class VehicleServiceTest {
 
         Vehicle vehicle = assertDoesNotThrow(() -> vehicleService.findById(id));
         assertEquals(id, vehicle.getId());
-//        assertEquals(vehicleMocks.getCorsa().get().getModel(), vehicle.getModel());
     }
 
     @Test
@@ -88,7 +87,7 @@ class VehicleServiceTest {
 
     @Test
     void testShouldCreateVehicleBrandNotFound() {
-        when(brandService.findById(Mockito.anyLong())).thenThrow(new BrandNotFoundException("Marca não encontrada!"));
+        when(brandService.findBrandById(Mockito.anyLong())).thenThrow(new BrandNotFoundException("Marca não encontrada!"));
 
         BrandNotFoundException brandNotFoundException = assertThrows(
                 BrandNotFoundException.class,
@@ -152,7 +151,7 @@ class VehicleServiceTest {
         vehicleModified.setModel("BMW3");
         vehicleModified.setBrandId(brandId);
         when(vehicleRepository.findById(Mockito.anyLong())).thenReturn(vehicleMocks.getCorsa());
-        when(brandService.findById(brandId)).thenThrow(new BrandNotFoundException("Marca não encontrada!"));
+        when(brandService.findBrandById(brandId)).thenThrow(new BrandNotFoundException("Marca não encontrada!"));
 
         BrandNotFoundException brandNotFoundException = assertThrows(
                 BrandNotFoundException.class,

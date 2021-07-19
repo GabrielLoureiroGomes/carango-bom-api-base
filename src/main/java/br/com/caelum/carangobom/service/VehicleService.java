@@ -1,6 +1,5 @@
 package br.com.caelum.carangobom.service;
 
-import br.com.caelum.carangobom.domain.Brand;
 import br.com.caelum.carangobom.domain.Vehicle;
 import br.com.caelum.carangobom.exception.BrandNotFoundException;
 import br.com.caelum.carangobom.exception.VehicleNotFoundException;
@@ -34,7 +33,7 @@ public class VehicleService {
     }
 
     public Vehicle create(Vehicle vehicle) throws BrandNotFoundException {
-        this.brandService.findById(vehicle.getBrandId());
+        this.brandService.findBrandById(vehicle.getBrandId());
         return this.vehicleRepository.create(vehicle);
     }
 
@@ -51,7 +50,7 @@ public class VehicleService {
         Optional<Vehicle> optionalVehicle = this.vehicleRepository.findById(id);
         if (optionalVehicle.isPresent()) {
             if (!vehicle.getBrandId().equals(optionalVehicle.get().getBrandId())) {
-                this.brandService.findById(vehicle.getBrandId());
+                this.brandService.findBrandById(vehicle.getBrandId());
             }
             return this.vehicleRepository.update(vehicle);
         } else {

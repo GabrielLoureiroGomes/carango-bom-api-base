@@ -1,7 +1,7 @@
 package br.com.caelum.carangobom.controller;
 
 import br.com.caelum.carangobom.domain.Brand;
-import br.com.caelum.carangobom.repository.BrandRepository;
+import br.com.caelum.carangobom.service.BrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -9,36 +9,36 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/carangobom/v1")
+@RequestMapping("/carangobom/v1/brand")
 public class BrandController {
 
     @Autowired
-    private BrandRepository brandRepository;
+    private BrandService brandService;
 
-    @GetMapping("brand")
+    @GetMapping
     public List<Brand> findAll() {
-        return brandRepository.findAll();
+        return brandService.findAllBrands();
     }
 
-    @GetMapping("brand/{id}")
+    @GetMapping("/{id}")
     public Brand findById(@PathVariable Long id) {
-        return brandRepository.findById(id);
+        return brandService.findBrandById(id);
     }
 
-    @PostMapping("brand")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Brand create(@RequestBody Brand brandName) {
-        return brandRepository.create(brandName.getName());
+        return brandService.createBrand(brandName);
     }
 
-    @DeleteMapping("brand/{id}")
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        brandRepository.delete(id);
+        brandService.deleteBrand(id);
     }
 
-    @PatchMapping("brand/{id}")
+    @PatchMapping("/{id}")
     public Brand update(@PathVariable Long id, @RequestBody Brand brandName) {
-        return brandRepository.update(id, brandName.getName());
+        return brandService.updateBrand(id, brandName);
     }
 
 }
