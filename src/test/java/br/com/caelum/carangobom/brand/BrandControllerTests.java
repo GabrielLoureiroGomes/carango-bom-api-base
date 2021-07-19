@@ -74,7 +74,7 @@ class BrandControllerTests {
         doNothing().when(brandService).deleteBrand(any());
 
         mockMvc.perform(delete("/carangobom/v1/brand/{id}", brandId))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
 }
