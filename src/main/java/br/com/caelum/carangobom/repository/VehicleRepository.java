@@ -1,18 +1,21 @@
 package br.com.caelum.carangobom.repository;
 
 import br.com.caelum.carangobom.domain.Vehicle;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
+@Repository
 public interface VehicleRepository {
 
     List<Vehicle> findAll();
 
-    Vehicle findById(Long id);
+    Optional<Vehicle> findById(Long id);
 
     Vehicle create(Vehicle vehicle);
 
-    Vehicle update(Vehicle vehicle);
+    Vehicle update(Long id, Vehicle vehicle);
 
     void delete(Long id);
 }

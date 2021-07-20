@@ -1,8 +1,8 @@
 package br.com.caelum.carangobom.service;
 
 import br.com.caelum.carangobom.domain.Brand;
-import br.com.caelum.carangobom.exception.BrandDuplicatedNameException;
 import br.com.caelum.carangobom.exception.BrandNotFoundException;
+import br.com.caelum.carangobom.exception.BrandDuplicatedNameException;
 import br.com.caelum.carangobom.exception.BusinessException;
 import br.com.caelum.carangobom.repository.BrandRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,5 +62,4 @@ public class BrandService {
         findBrandById(id);
         brandRepository.delete(id);
     }
-
 }

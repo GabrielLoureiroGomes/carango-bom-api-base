@@ -1,10 +1,10 @@
-package br.com.caelum.carangobom.brand;
+package br.com.caelum.carangobom.service;
 
 import br.com.caelum.carangobom.domain.Brand;
 import br.com.caelum.carangobom.exception.BrandDuplicatedNameException;
 import br.com.caelum.carangobom.exception.BrandNotFoundException;
+import br.com.caelum.carangobom.mocks.BrandMocks;
 import br.com.caelum.carangobom.repository.BrandRepository;
-import br.com.caelum.carangobom.service.BrandService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -28,7 +28,6 @@ class BrandServiceTests {
 
     @Mock
     private BrandRepository brandRepository;
-
 
     @Test
     @DisplayName("FIND ALL BRANDS")

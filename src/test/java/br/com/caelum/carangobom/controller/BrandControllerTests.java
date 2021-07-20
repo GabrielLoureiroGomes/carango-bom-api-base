@@ -1,7 +1,7 @@
-package br.com.caelum.carangobom.brand;
+package br.com.caelum.carangobom.controller;
 
-import br.com.caelum.carangobom.controller.BrandController;
 import br.com.caelum.carangobom.domain.Brand;
+import br.com.caelum.carangobom.mocks.BrandMocks;
 import br.com.caelum.carangobom.service.BrandService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
