@@ -1,32 +1,26 @@
 package br.com.caelum.carangobom.config.database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Properties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import javax.sql.DataSource;
+
+@Configuration
 public class PostgreConfiguration {
 
-    private PostgreConfiguration() {
-
-    }
-
-    public static Connection getDatabaseConnection() throws SQLException {
-
+    @Bean
+    public static DataSource getDatabaseConnection() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
         String databaseUrl = System.getenv().get("DATABASE_URI");
         String databaseUser = System.getenv().get("DATABASE_USER");
         String databasePassword = System.getenv().get("DATABASE_PASSWORD");
-        Connection conn = null;
 
-        Properties props = new Properties();
-        props.setProperty("user", databaseUser);
-        props.setProperty("password", databasePassword);
+        dataSource.setUrl(databaseUrl);
+        dataSource.setUsername(databaseUser);
+        dataSource.setPassword(databasePassword);
+        dataSource.setDriverClassName("org.postgresql.Driver");
 
-        try {
-            conn = DriverManager.getConnection(databaseUrl, props);
-        } catch (SQLException e) {
-            e.getCause();
-        }
-        return conn;
+        return dataSource;
     }
 }
