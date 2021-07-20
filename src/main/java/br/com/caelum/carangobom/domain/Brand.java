@@ -1,19 +1,18 @@
 package br.com.caelum.carangobom.domain;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Brand {
 
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
-    @NotBlank
-    @Size(min = 2, message = "Deve ter {min} ou mais caracteres.")
     private String name;
     private LocalDate createdAt;
     private LocalDate updatedAt;

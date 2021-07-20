@@ -1,32 +1,116 @@
 package br.com.caelum.carangobom.repository;
 
+import br.com.caelum.carangobom.config.database.PostgreConfiguration;
 import br.com.caelum.carangobom.domain.Vehicle;
+import br.com.caelum.carangobom.exception.BusinessException;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Repository;
 
+import java.sql.*;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
+import static br.com.caelum.carangobom.mappers.VehicleMappers.mapToVehicle;
+import static br.com.caelum.carangobom.mappers.VehicleMappers.mapToListVehicles;
+
+@Log4j2
+@Repository
 public class VehicleRepositoryImpl implements VehicleRepository {
+
     @Override
     public List<Vehicle> findAll() {
-        return null;
+        String findAllQuery = "SELECT ID, BRAND_ID, MODEL, YEAR, PRICE, CREATED_AT, UPDATED_AT FROM VEHICLES";
+
+        try (PreparedStatement ps = PostgreConfiguration.getDatabaseConnection().prepareStatement(findAllQuery)) {
+            ResultSet rs = ps.executeQuery();
+            return mapToListVehicles(rs);
+
+        } catch (SQLException e) {
+            log.debug(e.getMessage());
+        }
+        return List.of();
     }
 
     @Override
-    public Vehicle findById(Long id) {
-        return null;
+    public Optional<Vehicle> findById(Long id) {
+        String findByIdQuery = "SELECT ID, BRAND_ID, MODEL, YEAR, PRICE, CREATED_AT, UPDATED_AT FROM VEHICLES WHERE ID = ?";
+
+        try (PreparedStatement ps = PostgreConfiguration.getDatabaseConnection().prepareStatement(findByIdQuery)) {
+            ps.setLong(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            return mapToVehicle(rs);
+        } catch (SQLException e) {
+            log.debug(e.getMessage());
+            throw new BusinessException();
+        }
     }
 
     @Override
     public Vehicle create(Vehicle vehicle) {
-        return null;
+        String insertQuery = "INSERT INTO VEHICLES(BRAND_ID, MODEL, YEAR, PRICE, CREATED_AT) VALUES(?, ?, ?, ?, ?) RETURNING ID";
+        long id = 0;
+        try (PreparedStatement ps = PostgreConfiguration.getDatabaseConnection().prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setLong(1, vehicle.getBrandId());
+            ps.setString(2, vehicle.getModel());
+            ps.setString(3, vehicle.getYear());
+            ps.setInt(4, vehicle.getPrice());
+            ps.setDate(5, Date.valueOf(LocalDate.now()));
+
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows > 0) {
+                id = checkIfInsertIsSucceed(ps);
+            }
+        } catch (SQLException e) {
+            log.debug(e.getMessage());
+        }
+
+        Optional<Vehicle> newVehicle = findById(id);
+        return newVehicle.orElse(null);
     }
 
     @Override
-    public Vehicle update(Vehicle vehicle) {
-        return null;
+    public Vehicle update(Long id, Vehicle vehicle) {
+        String updateQuery = "UPDATE VEHICLES SET BRAND_ID = ?, MODEL = ?, YEAR = ?, PRICE = ?, UPDATED_AT = ? WHERE ID = ?";
+        try (PreparedStatement ps = PostgreConfiguration.getDatabaseConnection().prepareStatement(updateQuery)) {
+            ps.setLong(1, vehicle.getBrandId());
+            ps.setString(2, vehicle.getModel());
+            ps.setString(3, vehicle.getYear());
+            ps.setInt(4, vehicle.getPrice());
+            ps.setDate(5, Date.valueOf(LocalDate.now()));
+            ps.setLong(6, id);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            log.debug(e.getMessage());
+        }
+
+        Optional<Vehicle> newVehicle = findById(id);
+        return newVehicle.orElse(null);
     }
 
     @Override
     public void delete(Long id) {
+        String deleteQuery = "DELETE FROM VEHICLES WHERE ID = ?";
+        findById(id);
+        try (PreparedStatement ps = PostgreConfiguration.getDatabaseConnection().prepareStatement(deleteQuery)) {
+            ps.setLong(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            log.debug(e.getMessage());
+        }
+    }
 
+    private Long checkIfInsertIsSucceed(PreparedStatement ps) {
+        long count = 0;
+        try (ResultSet rs = ps.getGeneratedKeys()) {
+            if (rs.next()) {
+                count = rs.getLong(1);
+            }
+        } catch (SQLException e) {
+            log.debug(e.getMessage());
+        }
+        return count;
     }
 }
