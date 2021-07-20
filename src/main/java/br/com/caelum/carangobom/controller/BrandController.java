@@ -27,8 +27,8 @@ public class BrandController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Brand create(@RequestBody Brand brandName) {
-        return brandService.createBrand(brandName);
+    public Brand create(@RequestBody String name) {
+        return brandService.createBrand(name);
     }
 
     @DeleteMapping("/{id}")
@@ -38,8 +38,8 @@ public class BrandController {
     }
 
     @PatchMapping("/{id}")
-    public Brand update(@PathVariable Long id, @RequestBody Brand brandName) {
-        return brandService.updateBrand(id, brandName);
+    public Brand update(@PathVariable Long id, @RequestBody String name) {
+        return brandService.updateBrand(id, name);
     }
 
 }
