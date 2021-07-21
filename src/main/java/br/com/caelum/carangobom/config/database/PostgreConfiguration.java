@@ -2,11 +2,13 @@ package br.com.caelum.carangobom.config.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.Data;
 import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 
 @Configuration
+@Data
 public class PostgreConfiguration {
 
     public static DataSource getDatabaseConnection() {
