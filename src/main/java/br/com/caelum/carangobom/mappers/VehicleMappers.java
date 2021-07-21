@@ -1,8 +1,6 @@
 package br.com.caelum.carangobom.mappers;
 
-import br.com.caelum.carangobom.domain.Brand;
 import br.com.caelum.carangobom.domain.Vehicle;
-import br.com.caelum.carangobom.utils.Utils;
 import lombok.extern.log4j.Log4j2;
 
 import java.sql.ResultSet;
@@ -35,8 +33,8 @@ public class VehicleMappers {
             vehicle.setModel(rs.getString(COLUMN_MODEL));
             vehicle.setYear(rs.getString(COLUMN_YEAR));
             vehicle.setPrice(rs.getInt(COLUMN_PRICE));
-            vehicle.setCreatedAt(Utils.toLocalDate(rs.getDate(COLUMN_CREATED_AT).toString()));
-            vehicle.setUpdatedAt(rs.getDate(COLUMN_UPDATED_AT) != null ? Utils.toLocalDate(rs.getDate(COLUMN_UPDATED_AT).toString()) : null);
+            vehicle.setCreatedAt(rs.getDate(COLUMN_CREATED_AT).toLocalDate());
+            vehicle.setUpdatedAt(rs.getDate(COLUMN_UPDATED_AT) != null ? rs.getDate(COLUMN_UPDATED_AT).toLocalDate() : null);
 
             return Optional.of(vehicle);
 
@@ -56,8 +54,8 @@ public class VehicleMappers {
                 vehicle.setModel(rs.getString(COLUMN_MODEL));
                 vehicle.setYear(rs.getString(COLUMN_YEAR));
                 vehicle.setPrice(rs.getInt(COLUMN_PRICE));
-                vehicle.setCreatedAt(Utils.toLocalDate(rs.getDate(COLUMN_CREATED_AT).toString()));
-                vehicle.setUpdatedAt(rs.getDate(COLUMN_UPDATED_AT) != null ? Utils.toLocalDate(rs.getDate(COLUMN_UPDATED_AT).toString()) : null);
+                vehicle.setCreatedAt(rs.getDate(COLUMN_CREATED_AT).toLocalDate());
+                vehicle.setUpdatedAt(rs.getDate(COLUMN_UPDATED_AT) != null ? rs.getDate(COLUMN_UPDATED_AT).toLocalDate() : null);
                 vehicles.add(vehicle);
             }
         } catch (SQLException e) {

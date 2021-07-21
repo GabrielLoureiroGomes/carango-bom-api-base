@@ -7,10 +7,16 @@ import br.com.caelum.carangobom.mocks.BrandMocks;
 import br.com.caelum.carangobom.repository.BrandRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +27,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
+@ExtendWith(SpringExtension.class)
+@EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
 class BrandServiceTests {
 
     @InjectMocks
@@ -29,11 +37,17 @@ class BrandServiceTests {
     @Mock
     private BrandRepository brandRepository;
 
+    @MockBean
+    private DataSource dataSource;
+
+
     @Test
     @DisplayName("FIND ALL BRANDS")
     void shouldGetAllBrands() {
         given(brandRepository.findAll()).willReturn(BrandMocks.getListBrands());
+
         List<Brand> expected = brandService.findAllBrands();
+
         assertEquals(expected, BrandMocks.getListBrands());
         assertEquals(5, expected.size());
         verify(brandRepository, times(1)).findAll();
