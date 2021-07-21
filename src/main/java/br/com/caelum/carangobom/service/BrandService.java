@@ -24,9 +24,7 @@ public class BrandService {
     public Brand findBrandById(Long id) {
         Optional<Brand> result = brandRepository.findById(id);
 
-        if (result.isEmpty()) throw new BrandNotFoundException(id.toString());
-
-        return result.get();
+        return result.orElseThrow(() -> new BrandNotFoundException(id.toString()));
     }
 
     public Brand findBrandByName(String name) {
@@ -44,11 +42,11 @@ public class BrandService {
 
     }
 
-    public Brand updateBrand(Long id, String brandname) {
+    public Brand updateBrand(Long id, String brandName) {
 
-        this.validateUpdate(id, brandname);
+        this.validateUpdate(id, brandName);
 
-        return brandRepository.update(id, brandname).orElseThrow(BusinessException::new);
+        return brandRepository.update(id, brandName).orElseThrow(BusinessException::new);
     }
 
     private void validateUpdate(Long id, String name) {
