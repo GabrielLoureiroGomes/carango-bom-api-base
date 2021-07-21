@@ -147,7 +147,7 @@ class BrandServiceTests {
         Optional<Brand> optionalBrand = Optional.of(BrandMocks.getAudi());
         String audi = optionalBrand.get().getName();
 
-        given(brandRepository.findById(any())).willReturn(Optional.empty());
+        given(brandRepository.findById(any())).willThrow(BrandNotFoundException.class);
 
         assertThrows(BrandNotFoundException.class, () -> brandService.updateBrand(id, audi));
         verify(brandRepository, times(1)).findById(any());
