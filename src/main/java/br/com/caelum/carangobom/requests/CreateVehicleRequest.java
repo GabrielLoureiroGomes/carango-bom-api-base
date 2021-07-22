@@ -1,4 +1,4 @@
-package br.com.caelum.carangobom.controller.request;
+package br.com.caelum.carangobom.requests;
 
 import br.com.caelum.carangobom.domain.Vehicle;
 import lombok.AllArgsConstructor;

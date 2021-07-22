@@ -1,6 +1,6 @@
 package br.com.caelum.carangobom.controller;
 
-import br.com.caelum.carangobom.controller.request.CreateVehicleRequest;
+import br.com.caelum.carangobom.requests.CreateVehicleRequest;
 import br.com.caelum.carangobom.domain.Vehicle;
 import br.com.caelum.carangobom.exception.BrandNotFoundException;
 import br.com.caelum.carangobom.exception.VehicleNotFoundException;
@@ -9,7 +9,6 @@ import br.com.caelum.carangobom.service.VehicleService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

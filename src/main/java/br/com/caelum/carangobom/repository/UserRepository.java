@@ -3,16 +3,17 @@ package br.com.caelum.carangobom.repository;
 import br.com.caelum.carangobom.domain.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository {
 
     List<User> findAll();
 
-    User findById();
+    Optional<User> findById(Long id);
 
-    User create(User user);
+    void create(User user);
 
-    User update(User user);
+    void changePassword(Long id, String password);
 
     void delete(Long id);
 }
