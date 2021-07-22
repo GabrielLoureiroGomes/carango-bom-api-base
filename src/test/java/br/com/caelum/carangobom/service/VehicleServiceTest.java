@@ -11,9 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,9 +30,6 @@ class VehicleServiceTest {
 
     @Mock
     private BrandService brandService;
-
-    @MockBean
-    private DataSource dataSource;
 
     private final VehicleMocks vehicleMocks = new VehicleMocks();
 

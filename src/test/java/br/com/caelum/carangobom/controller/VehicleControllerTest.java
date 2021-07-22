@@ -1,33 +1,23 @@
 package br.com.caelum.carangobom.controller;
 
-import br.com.caelum.carangobom.config.security.SecurityConfiguration;
 import br.com.caelum.carangobom.domain.Vehicle;
 import br.com.caelum.carangobom.exception.BrandNotFoundException;
 import br.com.caelum.carangobom.exception.VehicleNotFoundException;
 import br.com.caelum.carangobom.mocks.VehicleMocks;
 import br.com.caelum.carangobom.requests.CreateVehicleRequest;
-import br.com.caelum.carangobom.service.TokenService;
 import br.com.caelum.carangobom.service.VehicleService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.MockBeans;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
-import org.springframework.security.config.annotation.SecurityBuilder;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import javax.sql.DataSource;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -40,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
 class VehicleControllerTest {
 
     @Autowired
@@ -51,18 +40,6 @@ class VehicleControllerTest {
 
     @MockBean
     private VehicleService vehicleService;
-
-    @MockBean
-    private AuthController authController;
-
-    @MockBean
-    private TokenService tokenService;
-
-    @MockBean
-    private SecurityConfiguration securityConfiguration;
-
-    @MockBean
-    private DataSource dataSource;
 
     private final VehicleMocks vehicleMocks = new VehicleMocks();
 

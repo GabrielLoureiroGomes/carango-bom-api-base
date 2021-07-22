@@ -1,24 +1,17 @@
 package br.com.caelum.carangobom.service;
 
-import br.com.caelum.carangobom.config.security.SecurityConfiguration;
-import br.com.caelum.carangobom.controller.AuthController;
 import br.com.caelum.carangobom.domain.Brand;
 import br.com.caelum.carangobom.exception.BrandDuplicatedNameException;
 import br.com.caelum.carangobom.exception.BrandNotFoundException;
 import br.com.caelum.carangobom.mocks.BrandMocks;
 import br.com.caelum.carangobom.repository.BrandRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.MockitoAnnotations;
 
-import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,9 +21,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
-@ExtendWith(SpringExtension.class)
-@EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
 class BrandServiceTests {
 
     @InjectMocks
@@ -39,18 +29,10 @@ class BrandServiceTests {
     @Mock
     private BrandRepository brandRepository;
 
-    @MockBean
-    private DataSource dataSource;
-
-    @MockBean
-    private SecurityConfiguration securityConfiguration;
-
-    @MockBean
-    private AuthController authController;
-
-    @InjectMocks
-    private TokenService tokenService;
-
+    @BeforeEach
+    public void getMocks() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
     @DisplayName("FIND ALL BRANDS")
