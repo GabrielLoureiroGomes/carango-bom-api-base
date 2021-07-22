@@ -1,116 +1,117 @@
 package br.com.caelum.carangobom.repository;
 
-import br.com.caelum.carangobom.config.database.PostgreConfiguration;
 import br.com.caelum.carangobom.domain.Vehicle;
-import br.com.caelum.carangobom.exception.BusinessException;
+import br.com.caelum.carangobom.mappers.VehicleRowMapper;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
+import javax.sql.DataSource;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-
-import static br.com.caelum.carangobom.mappers.VehicleMappers.mapToVehicle;
-import static br.com.caelum.carangobom.mappers.VehicleMappers.mapToListVehicles;
 
 @Log4j2
 @Repository
 public class VehicleRepositoryImpl implements VehicleRepository {
 
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public void setDataSource(final DataSource dataSource) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
     @Override
     public List<Vehicle> findAll() {
         String findAllQuery = "SELECT ID, BRAND_ID, MODEL, YEAR, PRICE, CREATED_AT, UPDATED_AT FROM VEHICLES";
 
-        try (PreparedStatement ps = PostgreConfiguration.getDatabaseConnection().prepareStatement(findAllQuery)) {
-            ResultSet rs = ps.executeQuery();
-            return mapToListVehicles(rs);
-
-        } catch (SQLException e) {
-            log.debug(e.getMessage());
-        }
-        return List.of();
+        return jdbcTemplate.query(findAllQuery, new VehicleRowMapper());
     }
 
     @Override
     public Optional<Vehicle> findById(Long id) {
-        String findByIdQuery = "SELECT ID, BRAND_ID, MODEL, YEAR, PRICE, CREATED_AT, UPDATED_AT FROM VEHICLES WHERE ID = ?";
+        try {
+            String findByIdQuery = "SELECT ID, BRAND_ID, MODEL, YEAR, PRICE, CREATED_AT, UPDATED_AT FROM VEHICLES WHERE ID = ?";
 
-        try (PreparedStatement ps = PostgreConfiguration.getDatabaseConnection().prepareStatement(findByIdQuery)) {
-            ps.setLong(1, id);
-            ResultSet rs = ps.executeQuery();
-
-            return mapToVehicle(rs);
-        } catch (SQLException e) {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(findByIdQuery, new VehicleRowMapper(), id));
+        } catch (Exception e) {
             log.debug(e.getMessage());
-            throw new BusinessException();
         }
+        return Optional.empty();
     }
 
     @Override
-    public Vehicle create(Vehicle vehicle) {
+    public Optional<Vehicle> create(Vehicle vehicle) {
         String insertQuery = "INSERT INTO VEHICLES(BRAND_ID, MODEL, YEAR, PRICE, CREATED_AT) VALUES(?, ?, ?, ?, ?) RETURNING ID";
-        long id = 0;
-        try (PreparedStatement ps = PostgreConfiguration.getDatabaseConnection().prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setLong(1, vehicle.getBrandId());
-            ps.setString(2, vehicle.getModel());
-            ps.setString(3, vehicle.getYear());
-            ps.setInt(4, vehicle.getPrice());
-            ps.setDate(5, Date.valueOf(LocalDate.now()));
 
-            int affectedRows = ps.executeUpdate();
-            if (affectedRows > 0) {
-                id = checkIfInsertIsSucceed(ps);
-            }
-        } catch (SQLException e) {
+        try {
+            KeyHolder key = new GeneratedKeyHolder();
+
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
+                ps.setLong(1, vehicle.getBrandId());
+                ps.setString(2, vehicle.getModel());
+                ps.setString(3, vehicle.getYear());
+                ps.setInt(4, vehicle.getPrice());
+                ps.setDate(5, Date.valueOf(LocalDate.now()));
+
+                return ps;
+            }, key);
+
+            return findById(Objects.requireNonNull(key.getKey()).longValue());
+
+        } catch (Exception e) {
             log.debug(e.getMessage());
         }
-
-        Optional<Vehicle> newVehicle = findById(id);
-        return newVehicle.orElse(null);
+        return Optional.empty();
     }
 
     @Override
-    public Vehicle update(Long id, Vehicle vehicle) {
-        String updateQuery = "UPDATE VEHICLES SET BRAND_ID = ?, MODEL = ?, YEAR = ?, PRICE = ?, UPDATED_AT = ? WHERE ID = ?";
-        try (PreparedStatement ps = PostgreConfiguration.getDatabaseConnection().prepareStatement(updateQuery)) {
-            ps.setLong(1, vehicle.getBrandId());
-            ps.setString(2, vehicle.getModel());
-            ps.setString(3, vehicle.getYear());
-            ps.setInt(4, vehicle.getPrice());
-            ps.setDate(5, Date.valueOf(LocalDate.now()));
-            ps.setLong(6, id);
-            ps.executeUpdate();
+    public Optional<Vehicle> update(Long id, Vehicle vehicle) {
+        try {
+            String updateQuery = "UPDATE VEHICLES SET BRAND_ID = ?, MODEL = ?, YEAR = ?, PRICE = ?, UPDATED_AT = ? WHERE ID = ?";
 
-        } catch (SQLException e) {
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(updateQuery);
+                ps.setLong(1, vehicle.getBrandId());
+                ps.setString(2, vehicle.getModel());
+                ps.setString(3, vehicle.getYear());
+                ps.setInt(4, vehicle.getPrice());
+                ps.setDate(5, Date.valueOf(LocalDate.now()));
+                ps.setLong(6, id);
+
+                return ps;
+            });
+
+            return findById(id);
+        } catch (Exception e) {
             log.debug(e.getMessage());
         }
+        return Optional.empty();
 
-        Optional<Vehicle> newVehicle = findById(id);
-        return newVehicle.orElse(null);
     }
 
     @Override
     public void delete(Long id) {
         String deleteQuery = "DELETE FROM VEHICLES WHERE ID = ?";
-        findById(id);
-        try (PreparedStatement ps = PostgreConfiguration.getDatabaseConnection().prepareStatement(deleteQuery)) {
-            ps.setLong(1, id);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            log.debug(e.getMessage());
-        }
-    }
 
-    private Long checkIfInsertIsSucceed(PreparedStatement ps) {
-        long count = 0;
-        try (ResultSet rs = ps.getGeneratedKeys()) {
-            if (rs.next()) {
-                count = rs.getLong(1);
-            }
-        } catch (SQLException e) {
+        try {
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(deleteQuery);
+                ps.setLong(1, id);
+
+                return ps;
+            });
+        } catch (Exception e) {
             log.debug(e.getMessage());
         }
-        return count;
     }
 }

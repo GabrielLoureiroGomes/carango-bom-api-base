@@ -24,9 +24,7 @@ public class BrandService {
     public Brand findBrandById(Long id) {
         Optional<Brand> result = brandRepository.findById(id);
 
-        if (result.isEmpty()) throw new BrandNotFoundException(id.toString());
-
-        return result.get();
+        return result.orElseThrow(() -> new BrandNotFoundException(id.toString()));
     }
 
     public Brand findBrandByName(String name) {
@@ -35,20 +33,20 @@ public class BrandService {
         return result.orElseThrow(() -> new BrandNotFoundException(name));
     }
 
-    public Brand createBrand(Brand brand) {
-        Optional<Brand> result = brandRepository.findByName(brand.getName());
+    public Brand createBrand(String brandName) {
+        Optional<Brand> result = brandRepository.findByName(brandName);
 
-        if (result.isPresent()) throw new BrandDuplicatedNameException(brand.getName());
+        if (result.isPresent()) throw new BrandDuplicatedNameException(brandName);
 
-        return brandRepository.create(brand.getName()).orElseThrow(BusinessException::new);
+        return brandRepository.create(brandName).orElseThrow(BusinessException::new);
 
     }
 
-    public Brand updateBrand(Long id, Brand brand) {
+    public Brand updateBrand(Long id, String brandName) {
 
-        this.validateUpdate(id, brand.getName());
+        this.validateUpdate(id, brandName);
 
-        return brandRepository.update(id, brand.getName()).orElseThrow(BusinessException::new);
+        return brandRepository.update(id, brandName).orElseThrow(BusinessException::new);
     }
 
     private void validateUpdate(Long id, String name) {

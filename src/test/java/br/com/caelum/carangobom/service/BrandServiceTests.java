@@ -1,5 +1,7 @@
 package br.com.caelum.carangobom.service;
 
+import br.com.caelum.carangobom.config.security.SecurityConfiguration;
+import br.com.caelum.carangobom.controller.AuthController;
 import br.com.caelum.carangobom.domain.Brand;
 import br.com.caelum.carangobom.exception.BrandDuplicatedNameException;
 import br.com.caelum.carangobom.exception.BrandNotFoundException;
@@ -7,10 +9,16 @@ import br.com.caelum.carangobom.mocks.BrandMocks;
 import br.com.caelum.carangobom.repository.BrandRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +29,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
+@ExtendWith(SpringExtension.class)
+@EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
 class BrandServiceTests {
 
     @InjectMocks
@@ -29,11 +39,26 @@ class BrandServiceTests {
     @Mock
     private BrandRepository brandRepository;
 
+    @MockBean
+    private DataSource dataSource;
+
+    @MockBean
+    private SecurityConfiguration securityConfiguration;
+
+    @MockBean
+    private AuthController authController;
+
+    @InjectMocks
+    private TokenService tokenService;
+
+
     @Test
     @DisplayName("FIND ALL BRANDS")
     void shouldGetAllBrands() {
         given(brandRepository.findAll()).willReturn(BrandMocks.getListBrands());
+
         List<Brand> expected = brandService.findAllBrands();
+
         assertEquals(expected, BrandMocks.getListBrands());
         assertEquals(5, expected.size());
         verify(brandRepository, times(1)).findAll();
@@ -82,11 +107,12 @@ class BrandServiceTests {
     @DisplayName("CREATE BRAND")
     void shouldCreateBrand() {
         Brand audi = BrandMocks.getAudi();
+        String audiname = audi.getName();
 
         given(brandRepository.findByName(any())).willReturn(Optional.empty());
         given(brandRepository.create(any())).willReturn(Optional.of(BrandMocks.getAudi()));
 
-        Brand expected = brandService.createBrand(BrandMocks.getAudi());
+        Brand expected = brandService.createBrand(audiname);
 
         assertEquals(expected, audi);
         verify(brandRepository, times(1)).findByName(any());
@@ -97,7 +123,7 @@ class BrandServiceTests {
     @DisplayName("CREATE BRAND BY EXISTING BRAND NAME")
     void shouldThrowErrorWhenCreateBrandWithExistingName() {
         Optional<Brand> optionalAudi = Optional.of(BrandMocks.getAudi());
-        Brand audi = optionalAudi.get();
+        String audi = optionalAudi.get().getName();
 
         given(brandRepository.findByName(any())).willReturn(Optional.of(BrandMocks.getAudi()));
         given(brandRepository.create(any())).willReturn(Optional.of(BrandMocks.getAudi()));
@@ -111,12 +137,13 @@ class BrandServiceTests {
     @DisplayName("UPDATE BRAND")
     void shouldUpdateBrand() {
         Long id = 2L;
+        String fiatName = BrandMocks.getFiat().getName();
 
         given(brandRepository.findById(id)).willReturn(Optional.of(BrandMocks.getAudi()));
         given(brandRepository.findByName(BrandMocks.getAudi().getName())).willReturn(Optional.empty());
         given(brandRepository.update(id, BrandMocks.getFiat().getName())).willReturn(Optional.of(BrandMocks.getFiat()));
 
-        Brand expected = brandService.updateBrand(id, BrandMocks.getFiat());
+        Brand expected = brandService.updateBrand(id, fiatName);
 
         assertEquals(expected, BrandMocks.getFiat());
         verify(brandRepository, times(1)).findById(any());
@@ -129,7 +156,7 @@ class BrandServiceTests {
     void shouldThrowErrorWhenUpdateBrandNonExistingId() {
         Long id = 2L;
         Optional<Brand> optionalBrand = Optional.of(BrandMocks.getAudi());
-        Brand audi = optionalBrand.get();
+        String audi = optionalBrand.get().getName();
 
         given(brandRepository.findById(any())).willReturn(Optional.empty());
 
@@ -143,10 +170,10 @@ class BrandServiceTests {
     @DisplayName("UPDATE BRAND BY EXISTING BRAND NAME")
     void shouldThrowErrorWhenUpdateBrandWithExistingName() {
         Long id = 2L;
-        Brand audi = BrandMocks.getAudi();
+        String audi = BrandMocks.getAudi().getName();
 
         given(brandRepository.findById(id)).willReturn(Optional.of(BrandMocks.getAudi()));
-        given(brandRepository.findByName(audi.getName())).willReturn(Optional.of(BrandMocks.getAudi()));
+        given(brandRepository.findByName(audi)).willReturn(Optional.of(BrandMocks.getAudi()));
 
         assertThrows(BrandDuplicatedNameException.class, () -> brandService.updateBrand(id, audi));
         verify(brandRepository, times(1)).findById(any());

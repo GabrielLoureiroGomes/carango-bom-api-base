@@ -1,5 +1,6 @@
 package br.com.caelum.carangobom.controller;
 
+import br.com.caelum.carangobom.config.security.SecurityConfiguration;
 import br.com.caelum.carangobom.domain.Brand;
 import br.com.caelum.carangobom.mocks.BrandMocks;
 import br.com.caelum.carangobom.service.BrandService;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.is;
@@ -26,6 +29,15 @@ class BrandControllerTests {
 
     @MockBean
     private BrandService brandService;
+
+    @MockBean
+    private SecurityConfiguration securityConfiguration;
+
+    @MockBean
+    private WebSecurityConfigurerAdapter webSecurityConfigurerAdapter;
+
+    @MockBean
+    private AuthenticationManager authenticationManager;
 
     @Test
     void shouldFetchAllBrands() throws Exception {

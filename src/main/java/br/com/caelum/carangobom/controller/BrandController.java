@@ -1,6 +1,7 @@
 package br.com.caelum.carangobom.controller;
 
 import br.com.caelum.carangobom.domain.Brand;
+import br.com.caelum.carangobom.requests.CreateUpdateBrandRequest;
 import br.com.caelum.carangobom.service.BrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,8 +28,8 @@ public class BrandController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Brand create(@RequestBody Brand brandName) {
-        return brandService.createBrand(brandName);
+    public Brand create(@RequestBody CreateUpdateBrandRequest request) {
+        return brandService.createBrand(request.getName());
     }
 
     @DeleteMapping("/{id}")
@@ -38,8 +39,8 @@ public class BrandController {
     }
 
     @PatchMapping("/{id}")
-    public Brand update(@PathVariable Long id, @RequestBody Brand brandName) {
-        return brandService.updateBrand(id, brandName);
+    public Brand update(@PathVariable Long id, @RequestBody CreateUpdateBrandRequest request) {
+        return brandService.updateBrand(id, request.getName());
     }
 
 }

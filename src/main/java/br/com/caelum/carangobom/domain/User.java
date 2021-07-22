@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements UserDetails {
@@ -22,10 +23,7 @@ public class User implements UserDetails {
 
     private List<Roles> roles = new ArrayList<>();
 
-    public User(Long id, String username, String password) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
+    public User(Object o, String name, String password, Object o1, Object o2) {
     }
 
     @Override

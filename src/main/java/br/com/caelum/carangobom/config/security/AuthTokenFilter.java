@@ -1,6 +1,7 @@
 package br.com.caelum.carangobom.config.security;
 
 import br.com.caelum.carangobom.domain.User;
+import br.com.caelum.carangobom.exception.UserNotFoundException;
 import br.com.caelum.carangobom.repository.UserRepository;
 import br.com.caelum.carangobom.service.TokenService;
 import lombok.AllArgsConstructor;
@@ -13,29 +14,33 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 @AllArgsConstructor
 public class AuthTokenFilter extends OncePerRequestFilter {
 
-    private TokenService tokenService;
-    private UserRepository userRepository;
+    private final TokenService tokenService;
+    private final UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String token = getTokenFromRequest(httpServletRequest);
         boolean isTokenValid = tokenService.validateToken(token);
 
-        if (isTokenValid) {
-            authenticateClient(token);
-        }
+        if (isTokenValid) authenticateClient(token);
 
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 
     private void authenticateClient(String token) {
         Long userId = tokenService.getUserId(token);
-        User user = userRepository.findById(userId).get();
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        Optional<User> optionalUser = userRepository.findById(userId);
+
+        if (optionalUser.isEmpty()) throw new UserNotFoundException(userId.toString());
+
+        User user = optionalUser.get();
+
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(optionalUser, null, user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 

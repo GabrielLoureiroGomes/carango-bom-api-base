@@ -1,6 +1,6 @@
 package br.com.caelum.carangobom.controller;
 
-import br.com.caelum.carangobom.controller.request.CreateVehicleRequest;
+import br.com.caelum.carangobom.requests.CreateVehicleRequest;
 import br.com.caelum.carangobom.domain.Vehicle;
 import br.com.caelum.carangobom.exception.VehicleNotFoundException;
 import br.com.caelum.carangobom.service.VehicleService;
