@@ -21,7 +21,7 @@
         <sonar.projectKey>tw-group-1_carango-bom-api-base</sonar.projectKey>
         <sonar.organization>tw-group-1</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.exclusions>src/main/java/br/com/caelum/carangobom/repository/*.java</sonar.exclusions>
+        <sonar.exclusions>**/domain/**/*, **/mappers/**/*, **/repository/**/*</sonar.exclusions>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.language>java</sonar.language>
