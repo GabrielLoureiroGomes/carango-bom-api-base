@@ -1,18 +1,15 @@
 package br.com.caelum.carangobom.controller;
 
-import br.com.caelum.carangobom.config.security.AuthTokenFilter;
-import br.com.caelum.carangobom.config.security.SecurityConfiguration;
 import br.com.caelum.carangobom.domain.Brand;
 import br.com.caelum.carangobom.mocks.BrandMocks;
 import br.com.caelum.carangobom.service.BrandService;
-import br.com.caelum.carangobom.service.TokenService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.is;
@@ -23,7 +20,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = BrandController.class)
+@SpringBootTest(classes = BrandController.class)
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
 class BrandControllerTests {
 
     @Autowired
@@ -31,21 +30,6 @@ class BrandControllerTests {
 
     @MockBean
     private BrandService brandService;
-
-    @MockBean
-    private TokenService tokenService;
-
-    @MockBean
-    private SecurityConfiguration securityConfiguration;
-
-    @MockBean
-    private AuthTokenFilter authTokenFilter;
-
-    @MockBean
-    private WebSecurityConfigurerAdapter webSecurityConfigurerAdapter;
-
-    @MockBean
-    private AuthenticationManager authenticationManager;
 
     @Test
     void shouldFetchAllBrands() throws Exception {
