@@ -13,9 +13,9 @@ public interface VehicleRepository {
 
     Optional<Vehicle> findById(Long id);
 
-    Vehicle create(Vehicle vehicle);
+    Optional<Vehicle> create(Vehicle vehicle);
 
-    Vehicle update(Long id, Vehicle vehicle);
+    Optional<Vehicle> update(Long id, Vehicle vehicle);
 
     void delete(Long id);
 }

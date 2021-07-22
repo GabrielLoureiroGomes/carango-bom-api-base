@@ -11,7 +11,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +33,9 @@ class VehicleServiceTest {
 
     @Mock
     private BrandService brandService;
+
+    @MockBean
+    private DataSource dataSource;
 
     private final VehicleMocks vehicleMocks = new VehicleMocks();
 
@@ -74,7 +79,7 @@ class VehicleServiceTest {
 
     @Test
     void testShouldCreateVehicle() {
-        when(vehicleRepository.create(any())).thenReturn(vehicleMocks.getUno().get());
+        when(vehicleRepository.create(any())).thenReturn(vehicleMocks.getUno());
         Vehicle vehicle = assertDoesNotThrow(() -> vehicleService.create(vehicleMocks.getUno().get()));
 
         assertNotNull(vehicle);
@@ -114,7 +119,7 @@ class VehicleServiceTest {
         Vehicle vehicleModified = vehicleMocks.getCorsa().get();
         vehicleModified.setModel("Celta");
         when(vehicleRepository.findById(Mockito.anyLong())).thenReturn(vehicleMocks.getCorsa());
-        when(vehicleRepository.update(Mockito.anyLong(), Mockito.any())).thenReturn(vehicleModified);
+        when(vehicleRepository.update(Mockito.anyLong(), Mockito.any())).thenReturn(Optional.of(vehicleModified));
 
         Vehicle vehicleUpdated = assertDoesNotThrow(() -> vehicleService.update(vehicleModified.getId(), vehicleModified));
         assertEquals(vehicleModified.getId(), vehicleUpdated.getId());
