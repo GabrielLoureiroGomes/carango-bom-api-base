@@ -5,6 +5,7 @@ import br.com.caelum.carangobom.exception.UserNotFoundException;
 import br.com.caelum.carangobom.repository.UserRepository;
 import br.com.caelum.carangobom.service.TokenService;
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 @AllArgsConstructor
+@Configuration
 public class AuthTokenFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;

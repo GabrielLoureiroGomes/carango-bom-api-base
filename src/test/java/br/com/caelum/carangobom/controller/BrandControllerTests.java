@@ -1,9 +1,11 @@
 package br.com.caelum.carangobom.controller;
 
+import br.com.caelum.carangobom.config.security.AuthTokenFilter;
 import br.com.caelum.carangobom.config.security.SecurityConfiguration;
 import br.com.caelum.carangobom.domain.Brand;
 import br.com.caelum.carangobom.mocks.BrandMocks;
 import br.com.caelum.carangobom.service.BrandService;
+import br.com.caelum.carangobom.service.TokenService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -31,7 +33,13 @@ class BrandControllerTests {
     private BrandService brandService;
 
     @MockBean
+    private TokenService tokenService;
+
+    @MockBean
     private SecurityConfiguration securityConfiguration;
+
+    @MockBean
+    private AuthTokenFilter authTokenFilter;
 
     @MockBean
     private WebSecurityConfigurerAdapter webSecurityConfigurerAdapter;
