@@ -20,8 +20,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class VehicleServiceTest {
 
@@ -124,6 +123,8 @@ class VehicleServiceTest {
         Vehicle vehicleUpdated = assertDoesNotThrow(() -> vehicleService.update(vehicleModified.getId(), vehicleModified));
         assertEquals(vehicleModified.getId(), vehicleUpdated.getId());
         assertEquals(vehicleModified.getModel(), vehicleUpdated.getModel());
+        verify(vehicleRepository, times(1)).findById(Mockito.anyLong());
+        verify(vehicleRepository, times(1)).update(vehicleModified.getId(), vehicleModified);
     }
 
     @Test
@@ -132,6 +133,7 @@ class VehicleServiceTest {
         when(vehicleRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
         assertThrows(VehicleNotFoundException.class, () -> vehicleService.update(vehicle.getId(), vehicle));
+        verify(vehicleRepository, times(1)).findById(Mockito.anyLong());
     }
 
     @Test
@@ -144,6 +146,8 @@ class VehicleServiceTest {
         when(brandService.findBrandById(brandId)).thenThrow(BrandNotFoundException.class);
 
         assertThrows(Exception.class, () -> vehicleService.update(vehicleModified.getId(), vehicleModified));
+        verify(vehicleRepository, times(1)).findById(Mockito.anyLong());
+        verify(brandService, times(1)).findBrandById(brandId);
     }
 
 }
