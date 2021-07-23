@@ -8,17 +8,16 @@ import lombok.Data;
 @AllArgsConstructor
 public class CreateUpdateUserRequest {
 
-    private String name;
+    private String userName;
     private String password;
 
     public User toUser() {
         return new User(
                 null,
-                name,
+                userName,
                 password,
                 null,
                 null
         );
     }
-
 }

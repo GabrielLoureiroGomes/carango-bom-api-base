@@ -1,6 +1,8 @@
 package br.com.caelum.carangobom.repository;
 
+import br.com.caelum.carangobom.domain.Dashboard;
 import br.com.caelum.carangobom.domain.Vehicle;
+import br.com.caelum.carangobom.mappers.DashboardRowMapper;
 import br.com.caelum.carangobom.mappers.VehicleRowMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,19 @@ public class VehicleRepositoryImpl implements VehicleRepository {
         String findAllQuery = "SELECT ID, BRAND_ID, MODEL, YEAR, PRICE, CREATED_AT, UPDATED_AT FROM VEHICLES";
 
         return jdbcTemplate.query(findAllQuery, new VehicleRowMapper());
+    }
+
+    @Override
+    public List<Dashboard> fetchDashboard() {
+        String fetchDashboardQuery = "select \n" +
+                "b.\"name\" as BRAND, \n" +
+                "SUM(v.price) as TOTAL_PRICE, \n" +
+                "count(v.model) as MODELS_AVAILABLE \n" +
+                "from brands b \n" +
+                "inner join vehicles v on v.brand_id = b.id\n" +
+                "group by v.model, b.\"name\" ";
+
+        return jdbcTemplate.query(fetchDashboardQuery, new DashboardRowMapper());
     }
 
     @Override

@@ -27,7 +27,7 @@ public class AuthController {
     private TokenService tokenService;
 
     @PostMapping
-    public ResponseEntity<?> auth(@RequestBody @Valid LoginDTO login) {
+    public ResponseEntity<TokenDTO> auth(@RequestBody @Valid LoginDTO login) {
         UsernamePasswordAuthenticationToken authData = login.getAuthData();
 
         try {

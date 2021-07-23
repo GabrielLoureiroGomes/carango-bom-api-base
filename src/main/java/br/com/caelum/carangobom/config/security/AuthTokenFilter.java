@@ -5,7 +5,6 @@ import br.com.caelum.carangobom.exception.UserNotFoundException;
 import br.com.caelum.carangobom.repository.UserRepository;
 import br.com.caelum.carangobom.service.TokenService;
 import lombok.AllArgsConstructor;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;

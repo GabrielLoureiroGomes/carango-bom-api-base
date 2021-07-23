@@ -5,12 +5,17 @@ import br.com.caelum.carangobom.mappers.UserRowMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Log4j2
@@ -22,6 +27,13 @@ public class UserRepositoryImpl implements UserRepository {
     @Autowired
     public void setDataSource(final DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
+    @Override
+    public List<User> findAll() {
+        String findAllQuery = "SELECT ID, NAME, CREATED_AT, UPDATED_AT FROM USERS";
+
+        return jdbcTemplate.query(findAllQuery, new UserRowMapper());
     }
 
     @Override
@@ -37,11 +49,11 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> findByUsername(String username) {
+    public Optional<User> findByUsername(String name) {
         try {
             String findByNameQuery = "SELECT ID, NAME, CREATED_AT, UPDATED_AT FROM USERS WHERE NAME = ?";
 
-            return Optional.ofNullable(jdbcTemplate.queryForObject(findByNameQuery, new UserRowMapper(), username));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(findByNameQuery, new UserRowMapper(), name));
         } catch (Exception e) {
             log.debug(e.getMessage());
         }
@@ -51,7 +63,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void changePassword(Long id, String password) {
         try {
-            String updateQuery = "UPDATE USERS SET PASSWORD = ? WHERE ID = ?";
+            String updateQuery = "UPDATE USERS SET PASSWORD = crypt(?, gen_salt('bf')) WHERE ID = ?";
 
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(updateQuery);
@@ -67,23 +79,26 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void create(User user) {
-        String insertQuery = "INSERT INTO USERS(NAME, PASSWORD, CREATED_AT) VALUES(?, crypt(?, gen_salt('bf'), ?)";
+    public Optional<User> create(User user) {
+        String insertQuery = "INSERT INTO USERS(NAME, PASSWORD, CREATED_AT) VALUES(?, crypt(?, gen_salt('bf')), ?) RETURNING ID";
 
         try {
+            KeyHolder key = new GeneratedKeyHolder();
 
             jdbcTemplate.update(connection -> {
-                PreparedStatement ps = connection.prepareStatement(insertQuery);
-                ps.setString(1, user.getUsername());
-                ps.setString(2, user.getPassword());
+                PreparedStatement ps = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, user.getUsername().trim());
+                ps.setString(2, user.getPassword().trim());
                 ps.setDate(3, Date.valueOf(LocalDate.now()));
 
                 return ps;
-            });
+            }, key);
 
+            return findById(Objects.requireNonNull(key.getKey()).longValue());
         } catch (Exception e) {
             log.debug(e.getMessage());
         }
+        return Optional.empty();
     }
 
     @Override
@@ -101,6 +116,4 @@ public class UserRepositoryImpl implements UserRepository {
             log.debug(e.getMessage());
         }
     }
-
-
 }

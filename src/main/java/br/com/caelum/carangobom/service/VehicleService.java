@@ -1,5 +1,6 @@
 package br.com.caelum.carangobom.service;
 
+import br.com.caelum.carangobom.domain.Dashboard;
 import br.com.caelum.carangobom.domain.Vehicle;
 import br.com.caelum.carangobom.exception.BrandNotFoundException;
 import br.com.caelum.carangobom.exception.BusinessException;
@@ -22,6 +23,10 @@ public class VehicleService {
 
     public List<Vehicle> findAll() {
         return this.vehicleRepository.findAll();
+    }
+
+    public List<Dashboard> fetchDashboard() {
+        return vehicleRepository.fetchDashboard();
     }
 
     public Vehicle findById(Long id) throws VehicleNotFoundException {

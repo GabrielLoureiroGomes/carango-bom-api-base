@@ -1,5 +1,6 @@
 package br.com.caelum.carangobom.controller;
 
+import br.com.caelum.carangobom.domain.Dashboard;
 import br.com.caelum.carangobom.requests.CreateVehicleRequest;
 import br.com.caelum.carangobom.domain.Vehicle;
 import br.com.caelum.carangobom.exception.VehicleNotFoundException;
@@ -23,6 +24,8 @@ public class VehicleController {
     public ResponseEntity<List<Vehicle>> getAll() {
         return new ResponseEntity<>(vehicleService.findAll(), HttpStatus.OK);
     }
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Vehicle> getById(@PathVariable Long id) throws VehicleNotFoundException {
