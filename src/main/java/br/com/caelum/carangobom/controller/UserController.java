@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/carangobom/v1/users")
+@RequestMapping("/carangobom/v1/user")
 public class UserController {
 
     @Autowired
