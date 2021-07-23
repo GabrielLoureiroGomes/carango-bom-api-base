@@ -1,11 +1,8 @@
 package br.com.caelum.carangobom.service;
 
-import br.com.caelum.carangobom.domain.Brand;
 import br.com.caelum.carangobom.domain.User;
-import br.com.caelum.carangobom.exception.BrandDuplicatedNameException;
 import br.com.caelum.carangobom.exception.UserDuplicatedException;
 import br.com.caelum.carangobom.exception.UserNotFoundException;
-import br.com.caelum.carangobom.mocks.BrandMocks;
 import br.com.caelum.carangobom.mocks.UserMocks;
 import br.com.caelum.carangobom.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +17,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.sql.DataSource;
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,9 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
 @ExtendWith(SpringExtension.class)
-@EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
 class UserServiceTests {
 
     @InjectMocks
@@ -83,7 +77,7 @@ class UserServiceTests {
     void shouldCreateUser() {
         User gabriel = UserMocks.getGabriel();
 
-        given(userRepository.findByName(any())).willReturn(Optional.empty());
+        given(userRepository.findByUsername(any())).willReturn(Optional.empty());
         given(userRepository.create(any())).willReturn(Optional.of(gabriel));
 
         userService.createUser(gabriel);
@@ -97,10 +91,10 @@ class UserServiceTests {
         Optional<User> optionalUser = Optional.of(UserMocks.getGabriel());
         User user = optionalUser.get();
 
-        given(userRepository.findByName(any())).willReturn(Optional.of(UserMocks.getGabriel()));
+        given(userRepository.findByUsername(any())).willReturn(Optional.of(UserMocks.getGabriel()));
 
         assertThrows(UserDuplicatedException.class, () -> userService.createUser(user));
-        verify(userRepository, times(1)).findByName(any());
+        verify(userRepository, times(1)).findByUsername(any());
         verify(userRepository, never()).create(any());
     }
 

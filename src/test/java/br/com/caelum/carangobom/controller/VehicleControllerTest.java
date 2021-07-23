@@ -1,10 +1,10 @@
 package br.com.caelum.carangobom.controller;
 
-import br.com.caelum.carangobom.requests.CreateVehicleRequest;
 import br.com.caelum.carangobom.domain.Vehicle;
 import br.com.caelum.carangobom.exception.BrandNotFoundException;
 import br.com.caelum.carangobom.exception.VehicleNotFoundException;
 import br.com.caelum.carangobom.mocks.VehicleMocks;
+import br.com.caelum.carangobom.requests.CreateVehicleRequest;
 import br.com.caelum.carangobom.service.VehicleService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,7 +21,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import javax.sql.DataSource;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -31,22 +31,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@SpringBootTest(classes = VehicleController.class)
 @AutoConfigureMockMvc
-@EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
+@EnableAutoConfiguration(exclude = {SecurityAutoConfiguration.class, DataSourceAutoConfiguration.class})
 class VehicleControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @MockBean
     private VehicleService vehicleService;
-
-    @MockBean
-    private DataSource dataSource;
 
     private final VehicleMocks vehicleMocks = new VehicleMocks();
 

@@ -11,7 +11,7 @@ public class UserMocks {
     public static User getArthur() {
         User user = new User();
         user.setId(1L);
-        user.setName("Arthur");
+        user.setUsername("Arthur");
         user.setPassword("12345");
         user.setCreatedAt(LocalDate.now().plusDays(2));
         user.setUpdatedAt(null);
@@ -21,7 +21,7 @@ public class UserMocks {
     public static User getGabriel() {
         User user = new User();
         user.setId(2L);
-        user.setName("Gabriel");
+        user.setUsername("Gabriel");
         user.setPassword("67890");
         user.setCreatedAt(LocalDate.now());
         user.setUpdatedAt(null);

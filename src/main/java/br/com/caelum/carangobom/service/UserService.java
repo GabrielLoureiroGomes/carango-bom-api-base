@@ -28,9 +28,9 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        Optional<User> result = userRepository.findByName(user.getName());
+        Optional<User> result = userRepository.findByUsername(user.getUsername());
 
-        if (result.isPresent()) throw new UserDuplicatedException(user.getName());
+        if (result.isPresent()) throw new UserDuplicatedException(user.getUsername());
 
         return userRepository.create(user).orElseThrow(BusinessException::new);
     }

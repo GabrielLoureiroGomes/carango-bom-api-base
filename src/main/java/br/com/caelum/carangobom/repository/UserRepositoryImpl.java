@@ -49,7 +49,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> findByName(String name) {
+    public Optional<User> findByUsername(String name) {
         try {
             String findByNameQuery = "SELECT ID, NAME, CREATED_AT, UPDATED_AT FROM USERS WHERE NAME = ?";
 
@@ -87,7 +87,7 @@ public class UserRepositoryImpl implements UserRepository {
 
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
-                ps.setString(1, user.getName().trim());
+                ps.setString(1, user.getUsername().trim());
                 ps.setString(2, user.getPassword().trim());
                 ps.setDate(3, Date.valueOf(LocalDate.now()));
 

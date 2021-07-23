@@ -20,7 +20,7 @@ public class UserRowMapper implements RowMapper<User> {
         final User user = new User();
 
         user.setId(resultSet.getLong(COLUMN_ID));
-        user.setName(resultSet.getString(COLUMN_NAME));
+        user.setUsername(resultSet.getString(COLUMN_NAME));
         user.setCreatedAt(resultSet.getDate(COLUMN_CREATED_AT).toLocalDate());
         user.setUpdatedAt(resultSet.getDate(COLUMN_UPDATED_AT) != null ? resultSet.getDate(COLUMN_UPDATED_AT).toLocalDate() : null);
 
