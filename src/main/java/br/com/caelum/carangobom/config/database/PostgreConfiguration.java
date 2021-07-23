@@ -18,12 +18,12 @@ public class PostgreConfiguration {
 
         HikariConfig hikariConfig = new HikariConfig();
 
+        hikariConfig.setDriverClassName("org.postgresql.Driver");
         hikariConfig.setJdbcUrl(databaseUrl);
         hikariConfig.setUsername(databaseUser);
         hikariConfig.setPassword(databasePassword);
         hikariConfig.setMinimumIdle(5);
         hikariConfig.setMaximumPoolSize(20);
-        hikariConfig.setDriverClassName("org.postgresql.Driver");
 
         return new HikariDataSource(hikariConfig);
     }
