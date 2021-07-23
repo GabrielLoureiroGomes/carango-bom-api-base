@@ -11,7 +11,7 @@ public interface UserRepository {
 
     Optional<User> findById(Long id);
 
-    void create(User user);
+    Optional<User> create(User user);
 
     void changePassword(Long id, String password);
 
