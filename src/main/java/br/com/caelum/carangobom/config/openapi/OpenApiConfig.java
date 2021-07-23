@@ -1,4 +1,4 @@
-package br.com.caelum.carangobom.openapi;
+package br.com.caelum.carangobom.config.openapi;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
