@@ -1,8 +1,10 @@
 package br.com.caelum.carangobom.service;
 
+import br.com.caelum.carangobom.domain.Dashboard;
 import br.com.caelum.carangobom.domain.Vehicle;
 import br.com.caelum.carangobom.exception.BrandNotFoundException;
 import br.com.caelum.carangobom.exception.VehicleNotFoundException;
+import br.com.caelum.carangobom.mocks.DashboardMocks;
 import br.com.caelum.carangobom.mocks.VehicleMocks;
 import br.com.caelum.carangobom.repository.VehicleRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,10 +47,18 @@ class VehicleServiceTest {
 
     @Test
     void testShouldRetrieveEmptyList() {
-        when(vehicleRepository.findAll()).thenReturn(new ArrayList<Vehicle>());
+        when(vehicleRepository.findAll()).thenReturn(new ArrayList<>());
         List<Vehicle> vehicles = vehicleService.findAll();
 
         assertEquals(0, vehicles.size());
+    }
+
+    @Test
+    void testShouldFetchDashboardInformation() {
+        when(vehicleRepository.fetchDashboard()).thenReturn(DashboardMocks.getDashboardInformation());
+        List<Dashboard> dashboards = vehicleService.fetchDashboard();
+
+        assertEquals(DashboardMocks.getDashboardInformation().size(), dashboards.size());
     }
 
     @Test
