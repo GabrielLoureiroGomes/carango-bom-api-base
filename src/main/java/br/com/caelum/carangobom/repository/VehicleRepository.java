@@ -1,5 +1,6 @@
 package br.com.caelum.carangobom.repository;
 
+import br.com.caelum.carangobom.domain.Dashboard;
 import br.com.caelum.carangobom.domain.Vehicle;
 import org.springframework.stereotype.Repository;
 
@@ -10,6 +11,8 @@ import java.util.Optional;
 public interface VehicleRepository {
 
     List<Vehicle> findAll();
+
+    List<Dashboard> fetchDashboard();
 
     Optional<Vehicle> findById(Long id);
 
