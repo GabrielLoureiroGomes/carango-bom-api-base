@@ -49,9 +49,21 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public Optional<User> findByName(String name) {
+        try {
+            String findByNameQuery = "SELECT ID, NAME, CREATED_AT, UPDATED_AT FROM USERS WHERE NAME = ?";
+
+            return Optional.ofNullable(jdbcTemplate.queryForObject(findByNameQuery, new UserRowMapper(), name));
+        } catch (Exception e) {
+            log.debug(e.getMessage());
+        }
+        return Optional.empty();
+    }
+
+    @Override
     public void changePassword(Long id, String password) {
         try {
-            String updateQuery = "UPDATE USERS SET PASSWORD = crypt(?, gen_salt('bf') WHERE ID = ?";
+            String updateQuery = "UPDATE USERS SET PASSWORD = crypt(?, gen_salt('bf')) WHERE ID = ?";
 
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(updateQuery);
@@ -68,7 +80,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> create(User user) {
-        String insertQuery = "INSERT INTO USERS(NAME, PASSWORD, CREATED_AT) VALUES(?, crypt(?, gen_salt('bf'), ?) RETURNING ID";
+        String insertQuery = "INSERT INTO USERS(NAME, PASSWORD, CREATED_AT) VALUES(?, crypt(?, gen_salt('bf')), ?) RETURNING ID";
 
         try {
             KeyHolder key = new GeneratedKeyHolder();
@@ -77,7 +89,7 @@ public class UserRepositoryImpl implements UserRepository {
                 PreparedStatement ps = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1, user.getName().trim());
                 ps.setString(2, user.getPassword().trim());
-                ps.setDate(2, Date.valueOf(LocalDate.now()));
+                ps.setDate(3, Date.valueOf(LocalDate.now()));
 
                 return ps;
             }, key);

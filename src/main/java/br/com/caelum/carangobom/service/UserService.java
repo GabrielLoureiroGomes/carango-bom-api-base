@@ -1,6 +1,8 @@
 package br.com.caelum.carangobom.service;
 
 import br.com.caelum.carangobom.domain.User;
+import br.com.caelum.carangobom.exception.BusinessException;
+import br.com.caelum.carangobom.exception.UserDuplicatedException;
 import br.com.caelum.carangobom.exception.UserNotFoundException;
 import br.com.caelum.carangobom.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +27,12 @@ public class UserService {
         return result.orElseThrow(() -> new UserNotFoundException(id.toString()));
     }
 
-    public void createUser(User user) {
-        userRepository.create(user);
+    public User createUser(User user) {
+        Optional<User> result = userRepository.findByName(user.getName());
+
+        if (result.isPresent()) throw new UserDuplicatedException(user.getName());
+
+        return userRepository.create(user).orElseThrow(BusinessException::new);
     }
 
     public void changePassword(Long id, String password) {
