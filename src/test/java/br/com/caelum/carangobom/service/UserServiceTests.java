@@ -16,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.sql.DataSource;
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,6 +76,9 @@ class UserServiceTests {
     @DisplayName("CREATE USER")
     void shouldCreateUser() {
         User gabriel = UserMocks.getGabriel();
+
+        given(userRepository.findByName(any())).willReturn(Optional.empty());
+        given(userRepository.create(any())).willReturn(Optional.of(gabriel));
 
         userService.createUser(gabriel);
 

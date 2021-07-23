@@ -28,8 +28,8 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody CreateUpdateUserRequest request) {
-        userService.createUser(request.toUser());
+    public User create(@RequestBody CreateUpdateUserRequest request) {
+        return userService.createUser(request.toUser());
     }
 
     @DeleteMapping("/{id}")
