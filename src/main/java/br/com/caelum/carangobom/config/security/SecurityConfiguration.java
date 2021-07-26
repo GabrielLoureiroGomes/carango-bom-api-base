@@ -50,7 +50,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/carangobom/v1/auth").permitAll()
                 .antMatchers(HttpMethod.POST, "/carangobom/v1/user").permitAll()
                 .antMatchers(HttpMethod.GET, "/carangobom/v1/vehicle").permitAll()
@@ -62,6 +61,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) {
-        throw new UnsupportedOperationException();
     }
 }
