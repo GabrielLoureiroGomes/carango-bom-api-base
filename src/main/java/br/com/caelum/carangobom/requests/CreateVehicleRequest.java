@@ -29,6 +29,7 @@ public class CreateVehicleRequest {
         return new Vehicle(
                 null,
                 brandId,
+                null,
                 model,
                 year,
                 price,

@@ -11,6 +11,7 @@ public class Vehicle {
 
     private Long id;
     private Long brandId;
+    private String brandName;
     private String model;
     private String year;
     private Integer price;

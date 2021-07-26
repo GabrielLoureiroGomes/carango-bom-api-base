@@ -33,7 +33,8 @@ public class VehicleRepositoryImpl implements VehicleRepository {
 
     @Override
     public List<Vehicle> findAll() {
-        String findAllQuery = "SELECT ID, BRAND_ID, MODEL, YEAR, PRICE, CREATED_AT, UPDATED_AT FROM VEHICLES";
+        String findAllQuery = "SELECT v.ID, v.BRAND_ID, b.\"name\", v.MODEL, v.YEAR, v.PRICE, v.CREATED_AT, v.UPDATED_AT FROM VEHICLES v\n" +
+                "inner join brands b on b.id = v.brand_id;";
 
         return jdbcTemplate.query(findAllQuery, new VehicleRowMapper());
     }
@@ -54,7 +55,8 @@ public class VehicleRepositoryImpl implements VehicleRepository {
     @Override
     public Optional<Vehicle> findById(Long id) {
         try {
-            String findByIdQuery = "SELECT ID, BRAND_ID, MODEL, YEAR, PRICE, CREATED_AT, UPDATED_AT FROM VEHICLES WHERE ID = ?";
+            String findByIdQuery = "SELECT v.ID, v.BRAND_ID, b.\"name\", v.MODEL, v.YEAR, v.PRICE, v.CREATED_AT, v.UPDATED_AT FROM VEHICLES v\n" +
+                    "inner join brands b on b.id = v.brand_id WHERE v.ID = ?";
 
             return Optional.ofNullable(jdbcTemplate.queryForObject(findByIdQuery, new VehicleRowMapper(), id));
         } catch (Exception e) {

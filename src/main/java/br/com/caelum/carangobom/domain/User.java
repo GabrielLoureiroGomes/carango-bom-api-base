@@ -22,7 +22,7 @@ public class User implements UserDetails {
 
     private List<Roles> roles = new ArrayList<>();
 
-    public User(Object o, String name, String password, Object o1, Object o2) {
+    public User(Object o, String name, String password, Object o1, Object o2, Object o3) {
     }
 
     @Override

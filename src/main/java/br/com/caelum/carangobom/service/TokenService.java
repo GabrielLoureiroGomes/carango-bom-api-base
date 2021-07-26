@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 
+import static io.jsonwebtoken.Jwts.parser;
+
 @Service
 public class TokenService {
 
@@ -35,7 +37,7 @@ public class TokenService {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            parser().setSigningKey(secret).parseClaimsJws(token);
             return true;
         } catch (Exception e) {
             return false;
@@ -43,7 +45,7 @@ public class TokenService {
     }
 
     public Long getUserId(String token) {
-        Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        Claims claims = parser().setSigningKey(secret).parseClaimsJws(token).getBody();
         return Long.parseLong(claims.getSubject());
     }
 }

@@ -12,6 +12,7 @@ public class VehicleRowMapper implements RowMapper<Vehicle> {
 
     private static final String COLUMN_ID = "ID";
     private static final String COLUMN_BRAND_ID = "BRAND_ID";
+    private static final String COLUMN_BRAND_NAME = "NAME";
     private static final String COLUMN_MODEL = "MODEL";
     private static final String COLUMN_YEAR = "YEAR";
     private static final String COLUMN_PRICE = "PRICE";
@@ -24,6 +25,7 @@ public class VehicleRowMapper implements RowMapper<Vehicle> {
 
         vehicle.setId(resultSet.getLong(COLUMN_ID));
         vehicle.setBrandId(resultSet.getLong(COLUMN_BRAND_ID));
+        vehicle.setBrandName(resultSet.getString(COLUMN_BRAND_NAME));
         vehicle.setModel(resultSet.getString(COLUMN_MODEL));
         vehicle.setYear(resultSet.getString(COLUMN_YEAR));
         vehicle.setPrice(resultSet.getInt(COLUMN_PRICE));
