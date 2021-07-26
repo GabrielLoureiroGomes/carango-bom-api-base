@@ -32,9 +32,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private UserRepository userRepository;
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        return encoder;
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Override
@@ -43,27 +42,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return super.authenticationManager();
     }
 
-    // Authentication
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(authService).passwordEncoder(passwordEncoder());
     }
 
-    // Authorization
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/**").permitAll()
-//                .antMatchers(HttpMethod.POST, "/carangobom/v1/auth").permitAll()
-//                .antMatchers(HttpMethod.POST, "/carangobom/v1/user").permitAll()
-//                .antMatchers(HttpMethod.GET, "/carangobom/v1/vehicle").permitAll()
+                .antMatchers(HttpMethod.POST, "/carangobom/v1/auth").permitAll()
+                .antMatchers(HttpMethod.POST, "/carangobom/v1/user").permitAll()
+                .antMatchers(HttpMethod.GET, "/carangobom/v1/vehicle").permitAll()
                 .anyRequest().authenticated()
                 .and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().addFilterBefore(new AuthTokenFilter(tokenService, userRepository), UsernamePasswordAuthenticationFilter.class);
     }
 
-    // Static resources
     @Override
     public void configure(WebSecurity web) {
     }
