@@ -27,6 +27,12 @@ public class UserService {
         return result.orElseThrow(() -> new UserNotFoundException(id.toString()));
     }
 
+    public User findUserByUsername(String username) {
+        Optional<User> result = userRepository.findByUsername(username);
+
+        return result.orElseThrow(() -> new UserNotFoundException(username));
+    }
+
     public User createUser(User user) {
         Optional<User> result = userRepository.findByUsername(user.getUsername());
 

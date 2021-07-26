@@ -12,6 +12,7 @@ public class VehicleMocks {
         Vehicle vehicle = new Vehicle();
         vehicle.setId(1L);
         vehicle.setBrandId(BrandMocks.getChevrolet().getId());
+        vehicle.setBrandName(BrandMocks.getChevrolet().getName());
         vehicle.setModel("Corsa");
         vehicle.setPrice(23000);
         vehicle.setYear("2012");
@@ -24,6 +25,7 @@ public class VehicleMocks {
         Vehicle vehicle = new Vehicle();
         vehicle.setId(2L);
         vehicle.setBrandId(BrandMocks.getAudi().getId());
+        vehicle.setBrandName(BrandMocks.getAudi().getName());
         vehicle.setModel("A3");
         vehicle.setPrice(150000);
         vehicle.setYear("2020");
@@ -36,6 +38,7 @@ public class VehicleMocks {
         Vehicle vehicle = new Vehicle();
         vehicle.setId(3L);
         vehicle.setBrandId(BrandMocks.getFiat().getId());
+        vehicle.setBrandName(BrandMocks.getFiat().getName());
         vehicle.setModel("Uno");
         vehicle.setPrice(30000);
         vehicle.setYear("2018");
