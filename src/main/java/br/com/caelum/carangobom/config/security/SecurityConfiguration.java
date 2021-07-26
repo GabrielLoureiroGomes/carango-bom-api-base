@@ -46,9 +46,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/carangobom/v1/auth").permitAll()
-                .antMatchers(HttpMethod.POST, "/carangobom/v1/user").permitAll()
-                .antMatchers(HttpMethod.GET, "/carangobom/v1/vehicle").permitAll()
+                .antMatchers("/**").permitAll()
+//                .antMatchers(HttpMethod.POST, "/carangobom/v1/auth").permitAll()
+//                .antMatchers(HttpMethod.POST, "/carangobom/v1/user").permitAll()
+//                .antMatchers(HttpMethod.GET, "/carangobom/v1/vehicle").permitAll()
                 .anyRequest().authenticated()
                 .and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
